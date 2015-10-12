@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var movies = require('./routes/users'); //routes are defined here
+var users = require('./routes/users'); //routes are defined here
 var app = express(); //Create the Express app
 
 //connect to our database
