@@ -4,7 +4,7 @@ var express = require('express');
 var router = express.Router();
 
 //get all the event
-router.route('/event').get(function(req, res) {
+router.route('/events').get(function(req, res) {
   Event.find(function(err, events) {
     if (err) {
       return res.send(err);
@@ -14,7 +14,7 @@ router.route('/event').get(function(req, res) {
 });
 
 //get all the events related to a user
-router.route('/event/:id').get(function(req, res) {
+router.route('/events/:id').get(function(req, res) {
   Event.find({ id_user: req.params.id},function(err, events) {
     if (err) {
       return res.send(err);
@@ -24,7 +24,7 @@ router.route('/event/:id').get(function(req, res) {
 });
 
 //insert a event
-router.route('/event/:id').post(function(req, res) {
+router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
@@ -32,6 +32,41 @@ router.route('/event/:id').post(function(req, res) {
       return res.send(err);
     }
     res.send({ message: 'Event Added' });
+  });
+});
+
+//delete an event
+router.route('/events/:id').delete(function(req, res) {
+  Event.remove({
+    _id: req.params.id
+  }, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json({ message: 'Event successfully deleted' });
+  });
+});
+
+//modify an event
+router.route('/events/:id').put(function(req,res){
+  Event.findOne({ _id: req.params.id }, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+
+    for (prop in req.body) {
+      event[prop] = req.body[prop];
+    }
+
+    // save the event
+    event.save(function(err) {
+      if (err) {
+        return res.send(err);
+      }
+
+      res.json({ message: 'Event updated!' });
+    });
   });
 });
 
