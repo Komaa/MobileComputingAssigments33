@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var users = require('./routes/users'); //routes are defined here
-var users = require('./routes/events');
+var events = require('./routes/events');
 var app = express(); //Create the Express app
 
 //connect to our database
