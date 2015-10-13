@@ -70,7 +70,7 @@ router.route('/users/:id').delete(function(req, res) {
 });
 
 //retriving a user
-router.route('/users/login').get(function(req, res) {
+router.route('/users/login').post(function(req, res) {
   User.findOne({ username: req.params.username, password: req.params.password}, function(err, user) {
     if (err) {
       return res.send(err);
