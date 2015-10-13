@@ -99,4 +99,14 @@ router.route('/events/search/bytype/:id_user').get(function(req, res) {
   });
 });
 
+//retriving a event by datetime
+router.route('/events/search/bydate/:id_user').get(function(req, res) {
+  Event.find({ end_event: { $gt: new Date(req.query.start_time)}, start_event: { $lt: new Date(req.query.end_time)}, id_user:req.params.id_user}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+    res.json(event);
+  });
+});
+
 module.exports = router;
