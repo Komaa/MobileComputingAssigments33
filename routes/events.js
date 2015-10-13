@@ -75,21 +75,28 @@ router.route('/events/search/:id_user').get(function(req, res) {
     if (err) {
       return res.send(err);
     }
-    console.log("i'm here");
     res.json(event);
   });
 });
 
 //retriving a event by name
-router.route('/events/search/:id_user').get(function(req, res) {
+router.route('/events/search/byname/:id_user').get(function(req, res) {
   Event.find({ name:req.query.name, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
-    console.log("i'm also here");
     res.json(event);
   });
 });
 
+//retriving a event by type
+router.route('/events/search/bytype/:id_user').get(function(req, res) {
+  Event.find({ type:req.query.type, id_user:req.params.id_user}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+    res.json(event);
+  });
+});
 
 module.exports = router;
