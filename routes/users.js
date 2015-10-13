@@ -73,7 +73,7 @@ router.route('/users/:id').delete(function(req, res) {
 router.route('/users/login').post(function(req, res) {
   console.log(req.body.username);
   console.log(req.body.password);
-  User.findOne({ username: req.params.username, password: req.params.password}, function(err, user) {
+  User.findOne({ username: req.body.username, password: req.body.password}, function(err, user) {
     if (err) {
       return res.send(err);
     }
