@@ -71,6 +71,7 @@ router.route('/events/:id').put(function(req,res){
 
 //retriving a event by id
 router.route('/events/search/:id_user').get(function(req, res) {
+  console.log(req.body.id);
   Event.findOne({ _id: req.body.id, user_id:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
