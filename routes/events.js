@@ -70,8 +70,8 @@ router.route('/events/:id').put(function(req,res){
 });
 
 //retriving a event by id
-router.route('/events/search/:id_user').get(function(req, res) {
-  Event.findOne({ _id:req.query.id, id_user:req.params.id_user}, function(err, event) {
+router.route('/events/search/:id_user/:id_event').get(function(req, res) {
+  Event.findOne({ _id:req.params.id_event, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
