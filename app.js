@@ -14,7 +14,7 @@ mongoose.connect(connectionString);
 
 //configure body-parser
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', users); //This is our route middleware
 app.use('/api', events); //This is our route middleware
 
