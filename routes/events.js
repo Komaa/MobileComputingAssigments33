@@ -71,7 +71,6 @@ router.route('/events/:id').put(function(req,res){
 
 //retriving a event by id
 router.route('/events/search/:id_user').get(function(req, res) {
-  console.log(req.query.id);
   Event.findOne({ _id:req.query.id, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
@@ -82,8 +81,8 @@ router.route('/events/search/:id_user').get(function(req, res) {
 });
 
 //retriving a event by name
-router.route('/events/search/byname/:name').get(function(req, res) {
-  Event.findOne({ name: req.params.name}, function(err, event) {
+router.route('/events/search/:id_user').get(function(req, res) {
+  Event.find({ name:req.query.name, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
@@ -92,37 +91,5 @@ router.route('/events/search/byname/:name').get(function(req, res) {
   });
 });
 
-//retriving a event by date
-router.route('/events/search/bydate/:date').get(function(req, res) {
-  Event.findOne({ _id: req.params.id}, function(err, event) {
-    if (err) {
-      return res.send(err);
-    }
-
-    res.json(event);
-  });
-});
-
-//retriving a event by location
-router.route('/events/search/bylocation/:location').get(function(req, res) {
-  Event.findOne({ _id: req.params.id}, function(err, event) {
-    if (err) {
-      return res.send(err);
-    }
-
-    res.json(event);
-  });
-});
-
-//retriving a event by type
-router.route('/events/search/bytype/:type').get(function(req, res) {
-  Event.findOne({ type: req.params.type}, function(err, event) {
-    if (err) {
-      return res.send(err);
-    }
-
-    res.json(event);
-  });
-});
 
 module.exports = router;
