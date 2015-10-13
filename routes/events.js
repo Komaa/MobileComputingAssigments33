@@ -58,7 +58,6 @@ router.route('/events/:id').put(function(req,res){
     for (prop in req.body) {
       event[prop] = req.body[prop];
     }
-
     // save the event
     event.save(function(err) {
       if (err) {
@@ -67,6 +66,61 @@ router.route('/events/:id').put(function(req,res){
 
       res.json({ message: 'Event updated!' });
     });
+  });
+});
+
+//retriving a event by id
+router.route('/events/search/:id').get(function(req, res) {
+  Event.findOne({ _id: req.params.id}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json(event);
+  });
+});
+
+//retriving a event by name
+router.route('/events/search/:name').get(function(req, res) {
+  Event.findOne({ name: req.params.name}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json(event);
+  });
+});
+
+//retriving a event by date
+router.route('/events/search/:date').get(function(req, res) {
+  Event.findOne({ _id: req.params.id}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json(event);
+  });
+});
+
+//retriving a event by location
+router.route('/events/search/:location').get(function(req, res) {
+  Event.findOne({ _id: req.params.id}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json(event);
+  });
+});
+
+//retriving a event by type
+router.route('/events/search/:type').get(function(req, res) {
+  Event.findOne({ type: req.params.type}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json(event);
   });
 });
 
