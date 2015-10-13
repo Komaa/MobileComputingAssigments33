@@ -44,4 +44,29 @@ router.route('/users/:id').put(function(req,res){
     });
   });
 });
+
+//retriving a user
+router.route('/users/:id').get(function(req, res) {
+  User.findOne({ _id: req.params.id}, function(err, user) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json(user);
+  });
+});
+
+//delete a user
+router.route('/users/:id').delete(function(req, res) {
+  User.remove({
+    _id: req.params.id
+  }, function(err, user) {
+    if (err) {
+      return res.send(err);
+    }
+
+    res.json({ message: 'Successfully deleted' });
+  });
+});
+
 module.exports = router;
