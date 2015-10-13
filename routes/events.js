@@ -25,7 +25,7 @@ router.route('/event/:id').get(function(req, res) {
 
 //insert a event
 router.route('/event/:id').post(function(req, res) {
-  _ = require("underscore");
+  _ = require('underscore');
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
     if (err) {

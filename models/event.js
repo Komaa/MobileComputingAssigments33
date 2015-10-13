@@ -3,7 +3,9 @@ var Schema=mongoose.Schema;
 
 var eventSchema = new Schema({
   name: String,
-  id_user: String,
+  id_user: [
+      {type: Schema.Types.ObjectId, ref: 'User'}
+    ],
   description: String,
   start_event: Date,
   end_event: Date,
