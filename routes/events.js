@@ -81,7 +81,7 @@ router.route('/events/search/:id').get(function(req, res) {
 });
 
 //retriving a event by name
-router.route('/events/search/:name').get(function(req, res) {
+router.route('/events/search/byname/:name').get(function(req, res) {
   Event.findOne({ name: req.params.name}, function(err, event) {
     if (err) {
       return res.send(err);
@@ -92,7 +92,7 @@ router.route('/events/search/:name').get(function(req, res) {
 });
 
 //retriving a event by date
-router.route('/events/search/:date').get(function(req, res) {
+router.route('/events/search/bydate/:date').get(function(req, res) {
   Event.findOne({ _id: req.params.id}, function(err, event) {
     if (err) {
       return res.send(err);
@@ -103,7 +103,7 @@ router.route('/events/search/:date').get(function(req, res) {
 });
 
 //retriving a event by location
-router.route('/events/search/:location').get(function(req, res) {
+router.route('/events/search/bylocation/:location').get(function(req, res) {
   Event.findOne({ _id: req.params.id}, function(err, event) {
     if (err) {
       return res.send(err);
@@ -114,7 +114,7 @@ router.route('/events/search/:location').get(function(req, res) {
 });
 
 //retriving a event by type
-router.route('/events/search/:type').get(function(req, res) {
+router.route('/events/search/bytype/:type').get(function(req, res) {
   Event.findOne({ type: req.params.type}, function(err, event) {
     if (err) {
       return res.send(err);
