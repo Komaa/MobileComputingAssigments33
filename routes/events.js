@@ -28,6 +28,8 @@ router.route('/event').post(function(req, res) {
   var event = new Event(req.body);
   console.log(event.id_user);
   console.log(event.name);
+  console.log(req.body.id_user);
+  console.log(req.body.name);
   event.save(function(err) {
     if (err) {
       return res.send(err);
