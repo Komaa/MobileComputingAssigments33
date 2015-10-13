@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var users = require('./routes/users'); //routes are defined here
+var users = require('./routes/events');
 var app = express(); //Create the Express app
 
 //connect to our database
@@ -15,5 +16,6 @@ mongoose.connect(connectionString);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use('/api', users); //This is our route middleware
+app.use('/api', events); //This is our route middleware
 
 module.exports = app;
