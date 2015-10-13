@@ -16,6 +16,9 @@ router.route('/event/:id').get(function(req, res) {
 //insert a event
 router.route('/event').post(function(req, res) {
   var event = new Event(req.body);
+  Console.log(req.body);
+  Console.log("hi");
+  Console.log(event);
   event.save(function(err) {
     if (err) {
       return res.send(err);
