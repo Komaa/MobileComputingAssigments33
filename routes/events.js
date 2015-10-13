@@ -75,7 +75,7 @@ router.route('/events/search/:id_user').get(function(req, res) {
     if (err) {
       return res.send(err);
     }
-
+    console.log("i'm here");
     res.json(event);
   });
 });
@@ -86,7 +86,7 @@ router.route('/events/search/:id_user').get(function(req, res) {
     if (err) {
       return res.send(err);
     }
-
+    console.log("i'm also here");
     res.json(event);
   });
 });
