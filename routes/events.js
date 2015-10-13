@@ -3,6 +3,16 @@ var Event = require('../models/event');
 var express = require('express');
 var router = express.Router();
 
+//get all the event
+router.route('/event').get(function(req, res) {
+  Event.find(function(err, events) {
+    if (err) {
+      return res.send(err);
+    }
+    res.json(events);
+  });
+});
+
 //get all the events related to a user
 router.route('/event/:id').get(function(req, res) {
   Event.find({ id_user: req.params.id},function(err, events) {
