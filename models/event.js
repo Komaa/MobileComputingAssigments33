@@ -10,7 +10,7 @@ var eventSchema = new Schema({
   start_event: Date,
   end_event: Date,
   loc: {
-    coordi: [Number],  // [<longitude>, <latitude>]
+    type: [Number],  // [<longitude>, <latitude>]
     index: '2d'      // create the geospatial index
   },
   repetition: Boolean,
