@@ -10,7 +10,7 @@ var eventSchema = new Schema({
   start_event: Date,
   end_event: Date,
   location: {
-      long: Number
+      long: Number,
       lat: Number
   },
   repetition: Boolean,
