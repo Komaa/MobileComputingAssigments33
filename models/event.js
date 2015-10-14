@@ -10,13 +10,8 @@ var eventSchema = new Schema({
   start_event: Date,
   end_event: Date,
   location: {
-    'type': {
-      type: String,
-      required: true,
-      enum: ['Point', 'LineString', 'Polygon'],
-      default: 'Point'
-    },
-    coordinates: [Number]
+    latitude: Number,
+    longitude: Number
   },
   repetition: Boolean,
   /* 0 for daily
