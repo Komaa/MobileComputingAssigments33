@@ -116,6 +116,7 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
   var coords = [];
   coords[0] = req.query.longitude;
   coords[1] = req.query.latitude;
+  console.log(req.query.latitude);
   req.query.distance /= 6371;
   console.log(coords);
   console.log(req.query.distance);
