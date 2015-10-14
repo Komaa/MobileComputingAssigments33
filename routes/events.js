@@ -26,10 +26,7 @@ router.route('/events/:id').get(function(req, res) {
 //insert a event
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
-  console.log(req.body.latitude);
-  console.log(req.body.longitude);
   var location={long: req.body.longitude, lat: req.body.latitude};
-  console.log(location);
   req.body.location=location;
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
@@ -107,6 +104,20 @@ router.route('/events/search/bytype/:id_user').get(function(req, res) {
 //retriving a event by datetime
 router.route('/events/search/bydate/:id_user').get(function(req, res) {
   Event.find({ end_event: { $gt: new Date(req.query.start_time)}, start_event: { $lt: new Date(req.query.end_time)}, id_user:req.params.id_user}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+    res.json(event);
+  });
+});
+
+//retriving a event by location
+router.route('/events/search/bylocation/:id_user').get(function(req, res) {
+  var coords = [];
+  coords[0] = req.query.longitude;
+  coords[1] = req.query.latitude;
+  req.query.distance /= 6371; 
+  Event.find({ end_event: { location: {$near: coords, $maxDistance: maxDistance} id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
