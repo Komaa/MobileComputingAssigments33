@@ -27,8 +27,8 @@ router.route('/events/:id').get(function(req, res) {
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
   var cordi = [];
-  cordi[0]=(Number)req.body.longitude;
-  cordi[1]=(Number)req.body.latitude;
+  cordi[0]=new Number(req.body.longitude);
+  cordi[1]=new Number(req.body.latitude);
   req.body.loc={type: cordi, index: '2d'};
   console.log(req.body.loc);
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
