@@ -117,7 +117,7 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
   coords[0] = req.query.longitude;
   coords[1] = req.query.latitude;
   req.query.distance /= 6371;
-  Event.find({ end_event: { location: {$near: coords, $maxDistance: maxDistance}, id_user:req.params.id_user}, function(err, event) {
+  Event.find({ location: {$near: coords, $maxDistance: maxDistance}, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
