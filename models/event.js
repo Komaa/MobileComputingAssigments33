@@ -9,9 +9,9 @@ var eventSchema = new Schema({
   description: String,
   start_event: Date,
   end_event: Date,
-  location: {
-      long: Number,
-      lat: Number
+  loc: {
+    coordi: [Number],  // [<longitude>, <latitude>]
+    index: '2d'      // create the geospatial index
   },
   repetition: Boolean,
   /* 0 for daily

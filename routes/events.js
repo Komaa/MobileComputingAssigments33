@@ -26,8 +26,8 @@ router.route('/events/:id').get(function(req, res) {
 //insert a event
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
-  var location={long: req.body.longitude, lat: req.body.latitude};
-  req.body.location=location;
+  var coordi={long: req.body.longitude, lat: req.body.latitude};
+  req.body.loc=coordi;
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
     if (err) {
@@ -120,7 +120,6 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
   req.query.distance /= 6371;
   console.log(coords);
   console.log(req.query.distance);
-  Event.ensureIndex({point:"2dsphere"});
   Event.find({ location: {$near: coords, $maxDistance: req.query.distance}, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
