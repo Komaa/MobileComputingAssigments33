@@ -27,7 +27,7 @@ router.route('/events/:id').get(function(req, res) {
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
   var coordi={long: req.body.longitude, lat: req.body.latitude};
-  req.body.loc=coordi;
+  req.body.loc={type: coordi};
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
     if (err) {
