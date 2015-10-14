@@ -17,8 +17,7 @@ var eventSchema = new Schema({
       default: 'Point'
     },
     coordinates: [Number]
-  }
-  longitude: Number,
+  },
   repetition: Boolean,
   /* 0 for daily
    1 for weekly
