@@ -30,7 +30,8 @@ router.route('/events/:id').post(function(req, res) {
   console.log(req.body.longitude);
   var location={long: req.body.longitude, lat: req.body.latitude};
   console.log(location);
-  var event = new Event(_.extend({ id_user: req.params.id }, req.body, location));
+  req.body.location=location;
+  var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
     if (err) {
       return res.send(err);
