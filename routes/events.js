@@ -30,6 +30,7 @@ router.route('/events/:id').post(function(req, res) {
   cordi[0]=req.body.longitude;
   cordi[1]=req.body.latitude;
   req.body.loc={type: cordi};
+  console.log(req.body.loc);
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
     if (err) {
