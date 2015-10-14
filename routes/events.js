@@ -29,7 +29,7 @@ router.route('/events/:id').post(function(req, res) {
   var cordi = [];
   cordi[0]=parseFloat(req.body.longitude);
   cordi[1]=parseFloat(req.body.latitude);
-  req.body.loc={type: cordi, index: '2d'};
+  req.body.loc={type: cordi};
   console.log(req.body.loc);
   var event = new Event(_.extend({ id_user: req.params.id }, req.body));
   event.save(function(err) {
