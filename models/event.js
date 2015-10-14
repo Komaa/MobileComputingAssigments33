@@ -10,8 +10,8 @@ var eventSchema = new Schema({
   start_event: Date,
   end_event: Date,
   location: {
-    latitude: Number,
-    longitude: Number
+    type: [Number],
+    index: '2d'
   },
   repetition: Boolean,
   /* 0 for daily
