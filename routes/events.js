@@ -26,7 +26,7 @@ router.route('/events/:id').get(function(req, res) {
 //insert a event
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
-  var coordi = [];
+  var cordi = [];
   cordi[0]=req.body.longitude;
   cordi[1]=req.body.latitude;
   req.body.loc={type: cordi};
