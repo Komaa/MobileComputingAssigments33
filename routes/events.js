@@ -31,7 +31,7 @@ router.route('/events/:id').post(function(req, res) {
   var coords= [];
   coords[0]=req.body.longitude;
   coords[1]=req.body.latitude;
-  var location={type: coords};
+  var location={coordinates: coords, index: '2d'};
 
   var event = new Event(_.extend({ id_user: req.params.id }, req.body, location));
   event.save(function(err) {

@@ -10,7 +10,7 @@ var eventSchema = new Schema({
   start_event: Date,
   end_event: Date,
   location: {
-    type: [Number],
+    coordinates: [Number],
     index: '2d'
   },
   repetition: Boolean,
