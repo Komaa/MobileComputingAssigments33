@@ -26,12 +26,16 @@ router.route('/events/:id').get(function(req, res) {
 //insert a event
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
-  var cordi = [];
+
+  /*var cordi = [];
   cordi[0]=parseFloat(req.body.longitude);
   cordi[1]=parseFloat(req.body.latitude);
-  req.body.loc={type: cordi};
+  req.body.loc={type: cordi};*/
+
+ //send in the format loc = 22.9,-10 in body of Post request
+  var cordi = req.body.loc.split(',');
   console.log(req.body.loc);
-  var event = new Event(_.extend({ id_user: req.params.id }, req.body));
+  var event = new Event(_.extend({ id_user: req.params.id }, req.body,{loc:cordi}));
   event.save(function(err) {
     if (err) {
       return res.send(err);
