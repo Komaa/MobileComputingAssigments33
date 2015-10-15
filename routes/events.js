@@ -120,14 +120,16 @@ router.route('/events/search/bydate/:id_user').get(function(req, res) {
 
 //retriving a event by location
 router.route('/events/search/bylocation/:id_user').get(function(req, res) {
-  var coords = [];
+/*  var coords = [];
   coords[0] = req.query.longitude;
-  coords[1] = req.query.latitude;
-  console.log(req.query.latitude);
-  req.query.distance /= 6371;
-  console.log(coords);
-  console.log(req.query.distance);
-  Event.find({ location: {$near: coords, $maxDistance: req.query.distance}, id_user:req.params.id_user}, function(err, event) {
+  coords[1] = req.query.latitude;*/
+
+  var coords = req.query.loc.split(',');
+  //find events withing a 10 km radius
+  var maxDist = 10 / 6371
+  //  req.query.distance /= 6371;
+
+  Event.find({ loc: {$near: coords, $maxDistance: maxDist }, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
