@@ -50,7 +50,13 @@ router.route('/events/copyevent/:id').post(function(req, res) {
     }
     event.id_user=req.params.id;
     console.log(event);
-    delete event._id;
+    // specify the transform schema option
+    if (!schema.options.toObject) schema.options.toObject = {};
+    schema.options.toObject.transform = function (doc, event, options) {
+      // remove the _id of every document before returning the result
+      delete ret._id;
+    }
+
     console.log(event);
     event.save(function(err) {
     if (err) {
