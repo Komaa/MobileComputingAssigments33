@@ -48,9 +48,12 @@ router.route('/events/copyevent/:id').post(function(req, res) {
     if (err) {
       return res.send(err);
     }
-    event.id_user=req.params.id;
-    console.log(event);
-    var evento = new Event(event);
+    var evento;
+    for (prop in event) {
+      evento[prop] = event[prop];
+    }
+    evento.id_user=req.params.id;
+    console.log(evento);
     evento.save(function(err) {
     if (err) {
       return res.send(err);
