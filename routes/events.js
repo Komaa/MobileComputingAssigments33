@@ -141,9 +141,9 @@ router.route('/events/invite/:id_user').post(function(req, res) {
     }
   }
   // Send email.
-  res.send('mail', mailOptions, function (error, response) {
+  res.send('mail', mailOptions, function (err, response) {
     if (error) {
-      console.log(error);
+      console.log(err);
       return res.send(err);
     } else {
       console.log('Message sent: ' + response.message);
