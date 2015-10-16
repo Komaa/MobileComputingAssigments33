@@ -27,14 +27,9 @@ router.route('/events/:id').get(function(req, res) {
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
 
-  /*var cordi = [];
-  cordi[0]=parseFloat(req.body.longitude);
-  cordi[1]=parseFloat(req.body.latitude);
-  req.body.loc={type: cordi};*/
-
  //send in the format loc = 22.9,-10 in body of Post request
   var cordi = req.body.loc.split(',');
-  console.log(req.body.loc);
+
   var event = new Event(_.extend({ id_user: req.params.id }, req.body,{loc:cordi}));
   event.save(function(err) {
     if (err) {
@@ -120,14 +115,10 @@ router.route('/events/search/bydate/:id_user').get(function(req, res) {
 
 //retriving a event by location
 router.route('/events/search/bylocation/:id_user').get(function(req, res) {
-/*  var coords = [];
-  coords[0] = req.query.longitude;
-  coords[1] = req.query.latitude;*/
 
   var coords = req.query.loc.split(',');
   //find events withing a 10 km radius
-  var maxDist = 10 / 6371
-  //  req.query.distance /= 6371;
+  var maxDist = req.query.distance / 6371;
 
   Event.find({ loc: {$near: coords, $maxDistance: maxDist }, id_user:req.params.id_user}, function(err, event) {
     if (err) {
