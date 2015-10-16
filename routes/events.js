@@ -133,14 +133,16 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
   var email=req.body.mail;
-  var event=Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {
+  var gevent;
+  Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
       console.log("ciao");
     }
     console.log(event.name);
+    gevent=event;
   });
-  console.log(event.name);
+  console.log(gevent.name);
   var user=req.params.id_user;
 
   var transporter = nodemailer.createTransport({
