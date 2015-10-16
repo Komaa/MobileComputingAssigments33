@@ -153,11 +153,11 @@ router.route('/events/invite/:id_user').post(function(req, res) {
               }
           });
 
-        var text = 'Greeting from Strax Calendar team! \n\n'+
+        var text = 'Greeting from Strax Calendar team! \n'+
         'The user '+ user.username + ' invited you to the event ' + event.name +
-        +'\n\nPlease click on the following link to accept the invitation:\n\n'+
+        +'Please click on the following link to accept the invitation:\n'+
         '130.233.42.94:8080/api/events/acceptinvitation/'+ event._id+
-        +'\n\nBest Regards';
+        +'\nBest Regards';
 
           var mailOptions = {
             from: 'mobilecalendar33@gmail.com', // sender address
