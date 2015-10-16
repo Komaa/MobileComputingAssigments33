@@ -132,23 +132,33 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
   var email=req.body.mail;
-  var mailOptions = {
-    to: email,
-    subject: 'Hello',
-    locals: {
-      title: 'Hello',
-      message: 'Welcome to my website'
-    }
-  }
-  // Send email.
+  var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'mobilecalendar33@gmail.com', // Your email id
+            pass: 'mobil3calendar33' // Your password
+        }
+    });
 
-  res.mail.send('mail', mailOptions, function (error) {
-    if (error) {
-      res.status(400).send('Sorry the mail was not be sent to your email address ' + email + '.\nError: ' + error);
-    }
-    res.send('A mail has successfully been sent to your email address ' + email);
+  var text = 'Hello world from \n\n'
+
+    var mailOptions = {
+      from: 'mobilecalendar33@gmail.com', // sender address
+      to: email, // list of receivers
+      subject: 'Email Example', // Subject line
+      text: text //, // plaintext body
+      // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        console.log(error);
+        res.json({yo: 'error'});
+    }else{
+        console.log('Message sent: ' + info.response);
+        res.json({yo: info.response});
+    };
   });
-
 });
 
 module.exports = router;
