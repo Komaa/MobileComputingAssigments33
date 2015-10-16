@@ -142,7 +142,6 @@ router.route('/events/invite/:id_user').post(function(req, res) {
     console.log(event.name);
     gevent=event;
   });
-  console.log(gevent.name);
   var user=req.params.id_user;
 
   var transporter = nodemailer.createTransport({
