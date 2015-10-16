@@ -142,7 +142,7 @@ router.route('/events/invite/:id_user').post(function(req, res) {
   }
   // Send email.
 
-  res.mail.send(, mailOptions, function (error) {
+  res.mail.send('mail', mailOptions, function (error) {
     if (error) {
       res.status(400).send('Sorry the mail was not be sent to your email address ' + email + '.\nError: ' + error);
     }
