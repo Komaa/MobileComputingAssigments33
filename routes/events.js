@@ -140,7 +140,7 @@ router.route('/events/invite/:id_user').post(function(req, res) {
             pass: 'mobil3calendar33' // Your password
         }
     });
-
+  console.log(email);
   var text = 'Hello world from \n\n'
 
     var mailOptions = {
