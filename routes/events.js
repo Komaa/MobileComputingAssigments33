@@ -50,8 +50,8 @@ router.route('/events/copyevent/:id').post(function(req, res) {
     }
     event.id_user=req.params.id;
     console.log(event);
-
-    event.save(function(err) {
+    var evento = new Event(event);
+    evento.save(function(err) {
     if (err) {
       return res.send(err);
     }
