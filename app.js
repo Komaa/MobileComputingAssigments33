@@ -4,6 +4,19 @@ var mongoose = require('mongoose');
 var users = require('./routes/users'); //routes are defined here
 var events = require('./routes/events');
 var app = express(); //Create the Express app
+var mailer = require('express-mailer');
+
+mailer.extend(app, {
+  from: 'mobilecalendar33@gmail.com',
+  host: 'smtp.gmail.com', // hostname
+  secureConnection: true, // use SSL
+  port: 465, // port for secure SMTP
+  transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+  auth: {
+    user: 'mobilecalendar33@gmail.com',
+    pass: 'mobil3calendar33'
+  }
+});
 
 //connect to our database
 //Ideally you will obtain DB details from a config file
