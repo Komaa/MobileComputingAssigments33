@@ -2,6 +2,7 @@ var User = require('../models/user');
 var Event = require('../models/event');
 var express = require('express');
 var nodemailer = require('nodemailer');
+var extend = require('util')._extend;
 var router = express.Router();
 
 //get all the event
@@ -137,11 +138,10 @@ router.route('/events/invite/:id_user').post(function(req, res) {
   Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
-      console.log("ciao");
     }
-    console.log(event.name);
-    gevent=event;
+    gevent=extend({}, event);
   });
+  console.log(gevent.name);
   var user=req.params.id_user;
 
   var transporter = nodemailer.createTransport({
