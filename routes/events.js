@@ -134,42 +134,45 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
   var email=req.body.mail;
-  var gevent;
   Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
-    gevent=extend({}, event);
-  });
-  console.log(gevent.name);
-  var user=req.params.id_user;
-
-  var transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-            user: 'mobilecalendar33@gmail.com', // Your email id
-            pass: 'mobil3calendar33' // Your password
+    User.findOne({ _id: req.params.id}, function(err, user) {
+        if (err) {
+          return res.send(err);
         }
+        var transporter = nodemailer.createTransport({
+              service: 'Gmail',
+              auth: {
+                  user: 'mobilecalendar33@gmail.com', // Your email id
+                  pass: 'mobil3calendar33' // Your password
+              }
+          });
+        var text = 'Greeting from Strax Calendar team! \n\n'+
+        'The user '+ user.username + 'invited you to the event ' + event.name + '/n/n'+
+        +'Please click on the following link to accept the invitation:/n/n'+
+        '130.233.42.94:8080/api/events/acceptinvitation/'+ event._id+
+        +'/n/nBest Regards';
+
+          var mailOptions = {
+            from: 'mobilecalendar33@gmail.com', // sender address
+            to: email, // list of receivers
+            subject: 'Invitation to an event', // Subject line
+            text: text //, // plaintext body
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+          if(error){
+              console.log(error);
+              res.json(error);
+          }else{
+              console.log('Message sent: ' + info.response);
+              res.json(info.response});
+          };
+        });
+
     });
-  console.log(email);
-  var text = 'Hello world from \n\n'
-
-    var mailOptions = {
-      from: 'mobilecalendar33@gmail.com', // sender address
-      to: email, // list of receivers
-      subject: 'Email Example', // Subject line
-      text: text //, // plaintext body
-      // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
-  };
-
-  transporter.sendMail(mailOptions, function(error, info){
-    if(error){
-        console.log(error);
-        res.json({yo: 'error'});
-    }else{
-        console.log('Message sent: ' + info.response);
-        res.json({yo: info.response});
-    };
   });
 });
 
