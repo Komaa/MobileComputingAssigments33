@@ -25,6 +25,7 @@ var eventSchema = new Schema({
   // type of the event (i.e work, fun)
   type: String
 });
+eventSchema.set('versionKey', false);
 
 
 module.exports = mongoose.model('Event', eventSchema);
