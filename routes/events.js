@@ -138,10 +138,13 @@ router.route('/events/invite/:id_user').post(function(req, res) {
     if (err) {
       return res.send(err);
     }
+    console.log(event.name);
     User.findOne({ _id: req.params.id_user}, function(err, user) {
         if (err) {
           return res.send(err);
         }
+        console.log(user.username);
+        console.log(event.name);
         var transporter = nodemailer.createTransport({
               service: 'Gmail',
               auth: {
@@ -149,6 +152,7 @@ router.route('/events/invite/:id_user').post(function(req, res) {
                   pass: 'mobil3calendar33' // Your password
               }
           });
+
         var text = 'Greeting from Strax Calendar team! \n\n'+
         'The user '+ user.username + 'invited you to the event ' + event.name + '/n/n'+
         +'Please click on the following link to accept the invitation:/n/n'+
