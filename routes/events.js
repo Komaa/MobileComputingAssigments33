@@ -25,7 +25,7 @@ router.route('/events/:id').get(function(req, res) {
   });
 });
 
-//insert a event
+//insert an event
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
 
@@ -38,6 +38,23 @@ router.route('/events/:id').post(function(req, res) {
       return res.send(err);
     }
     res.send({ message: 'Event Added' });
+  });
+});
+
+//copy an event
+router.route('/events/copyevent/:id').post(function(req, res) {
+  _ = require('underscore');
+  Event.findOne({ _id:req.body.id_event}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+    event.id_user=req.params.id;
+    event.save(function(err) {
+    if (err) {
+      return res.send(err);
+    }
+    res.send({ message: 'Event Copied' });
+    });
   });
 });
 
@@ -156,7 +173,7 @@ router.route('/events/invite/:id_user').post(function(req, res) {
         var text = 'Greeting from Strax Calendar team! \n\n'+
         'The user '+ user.username + ' invited you to the event ' + event.name
         +'\n\nPlease click on the following link to accept the invitation:\n\n'+
-        '130.233.42.94:8080/api/events/acceptinvitation/'+ event._id+
+        'www.straxcalendar.com/acceptinvitation/'+ event._id+
         '\n\nBest Regards';
 
           var mailOptions = {
