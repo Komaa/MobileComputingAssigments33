@@ -144,8 +144,10 @@ router.route('/events/invite/:id_user').post(function(req, res) {
   res.send('mail', mailOptions, function (error, response) {
     if (error) {
       console.log(error);
+      return res.send(err);
     } else {
       console.log('Message sent: ' + response.message);
+      res.json({ message: 'Message sent!' });
     }
   });
 });
