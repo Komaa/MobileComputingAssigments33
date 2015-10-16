@@ -3,8 +3,9 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var users = require('./routes/users'); //routes are defined here
 var events = require('./routes/events');
-var app = express(); //Create the Express app
 var expressMail = require('express-mail');
+var app = express(); //Create the Express app
+
 
 // Configure express-mail and setup default mail data.
 expressMail.extend(app, {
