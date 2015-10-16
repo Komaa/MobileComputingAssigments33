@@ -14,7 +14,7 @@ router.route('/users').get(function(req, res) {
 
 //insert a new user
 router.route('/users').post(function(req, res) {
-  console.log(req.body.username);
+  console.log(req.body);
   var user = new User(req.body);
   user.save(function(err) {
     if (err) {
