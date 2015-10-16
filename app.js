@@ -20,7 +20,7 @@ var mailconfig= {
   defaults: {
     from: 'mobilecalendar33@gmail.com'
   }
-});
+}
 
 app.use(expressMail(mailconfig));
 
