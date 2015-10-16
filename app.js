@@ -8,7 +8,7 @@ var app = express(); //Create the Express app
 
 
 // Configure express-mail and setup default mail data.
-expressMail.extend(app, {
+var mailconfig= {
   transport: 'SMTP',
   config: {
     service: 'Gmail',
@@ -21,6 +21,8 @@ expressMail.extend(app, {
     from: 'mobilecalendar33@gmail.com'
   }
 });
+
+app.use(expressMail(mailconfig));
 
 //connect to our database
 //Ideally you will obtain DB details from a config file
