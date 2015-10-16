@@ -44,7 +44,7 @@ router.route('/events/:id').post(function(req, res) {
 //copy an event
 router.route('/events/copyevent/:id').post(function(req, res) {
   _ = require('underscore');
-  Event.findOne({ _id:req.body.id_event},{ '_id': 0}, function(err, event) {
+  Event.findOne({ _id:req.body.id_event},'-_id', function(err, event) {
     if (err) {
       return res.send(err);
     }
