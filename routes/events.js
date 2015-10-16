@@ -132,21 +132,21 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
   var email=req.body.mail;
-  app.mailer.send({
-    subject : 'Invitation to an event'
-  }, {
-    to: email, // REQUIRED. This can be a comma delimited string just like a normal email to field.
-    subject: 'Invitation to an event', // REQUIRED.
-    message: 'Hi',
-    otherProperty: 'Other Property' // All additional properties are also passed to the template as local variables.
-  }, function (err) {
-    if (err) {
-      // handle error
-      console.log(err);
-      res.send('There was an error sending the email');
-      return;
+  var mailOptions = {
+    to: email,
+    subject: 'Hello',
+    locals: {
+      title: 'Hello',
+      message: 'Welcome to my website'
     }
-    res.send('Email Sent');
+  }
+  // Send email.
+  app.send('mail', mailOptions, function (error, response) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Message sent: ' + response.message);
+    }
   });
 });
 
