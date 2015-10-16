@@ -168,7 +168,7 @@ router.route('/events/invite/:id_user').post(function(req, res) {
               res.json(error);
           }else{
               console.log('Message sent: ' + info.response);
-              res.json(info.response});
+              res.json(info.response);
           };
         });
 
