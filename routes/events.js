@@ -133,8 +133,11 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
   var email=req.body.mail;
-  req.query.id=req.body.id;
-  var event=router.route('/events/search/:id_user').get(function(req, res);
+  var event=Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {
+    if (err) {
+      return res.send(err);
+    }
+  });
   console.log(event.name);
   var user=req.params.id_user;
 
