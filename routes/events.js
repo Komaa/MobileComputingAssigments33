@@ -138,7 +138,7 @@ router.route('/events/invite/:id_user').post(function(req, res) {
     if (err) {
       return res.send(err);
     }
-    User.findOne({ _id: req.params.id}, function(err, user) {
+    User.findOne({ _id: req.params.id_user}, function(err, user) {
         if (err) {
           return res.send(err);
         }
