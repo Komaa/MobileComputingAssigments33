@@ -2,7 +2,7 @@ var User = require('../models/user');
 var express = require('express');
 var router = express.Router();
 
-//get all the users
+//retrive all the users
 router.route('/users').get(function(req, res) {
   User.find(function(err, users) {
     if (err) {
@@ -25,33 +25,31 @@ router.route('/users').post(function(req, res) {
 
 //modify an user
 router.route('/users/:id').put(function(req,res){
+  //check if the user is present
   User.findOne({ _id: req.params.id }, function(err, user) {
     if (err) {
       return res.send(err);
     }
-
+    //for every properties to change in the body
     for (prop in req.body) {
       user[prop] = req.body[prop];
     }
-
     // save the user
     user.save(function(err) {
       if (err) {
         return res.send(err);
       }
-
       res.json({ message: 'User updated!' });
     });
   });
 });
 
-//retriving a user
+//retrive a user
 router.route('/users/:id').get(function(req, res) {
   User.findOne({ _id: req.params.id}, function(err, user) {
     if (err) {
       return res.send(err);
     }
-
     res.json(user);
   });
 });
@@ -64,18 +62,16 @@ router.route('/users/:id').delete(function(req, res) {
     if (err) {
       return res.send(err);
     }
-
     res.json({ message: 'Successfully deleted' });
   });
 });
 
-//log-in
+//check if the user is present and in case give back his information
 router.route('/users/login').post(function(req, res) {
   User.findOne({ username: req.body.username, password: req.body.password}, function(err, user) {
     if (err) {
       return res.send(err);
     }
-
     res.json(user);
   });
 });
