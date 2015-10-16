@@ -3,7 +3,6 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var users = require('./routes/users'); //routes are defined here
 var events = require('./routes/events');
-var nodemailer = require('nodemailer');
 var app = express(); //Create the Express app
 
 

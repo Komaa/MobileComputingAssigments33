@@ -1,6 +1,7 @@
 var User = require('../models/user');
 var Event = require('../models/event');
 var express = require('express');
+var nodemailer = require('nodemailer');
 var router = express.Router();
 
 //get all the event
