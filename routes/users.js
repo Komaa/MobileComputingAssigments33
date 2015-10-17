@@ -15,12 +15,16 @@ router.route('/users').get(function(req, res) {
 //insert a new user
 router.route('/users').post(function(req, res) {
   var user = new User(req.body);
-  user.save(function(err) {
-    if (err) {
-      return res.send(err);
-    }
-    res.send({ message: 'User Added' });
-  });
+  bcrypt.hash(req.body.password, null, null, function(err, hash) {
+   req.body.password=hash;
+   user.save(function(err) {
+        if (err) {
+          return res.send(err);
+        }
+        res.send({ message: 'User Added' });
+      });
+});
+
 });
 
 //modify an user
