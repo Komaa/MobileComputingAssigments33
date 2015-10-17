@@ -1,7 +1,6 @@
 var User = require('../models/user');
 var express = require('express');
 var router = express.Router();
-var bcrypt = require('bcryptjs');
 
 //retrive all the users
 router.route('/users').get(function(req, res) {
@@ -15,16 +14,14 @@ router.route('/users').get(function(req, res) {
 
 //insert a new user
 router.route('/users').post(function(req, res) {
-  bcrypt.hash(req.body.password, null, null, function(err, hash) {
-     var user = new User(req.body.username,hash);
-   user.save(function(err) {
-        if (err) {
-          return res.send(err);
-        }
-        res.send({ message: 'User Added' });
-      });
-});
-
+  req.body.password = bcrypt.hashSync(req.body.password);
+  var user = new User(req.body);
+  user.save(function(err) {
+    if (err) {
+      return res.send(err);
+    }
+    res.send({ message: 'User Added' });
+  });
 });
 
 //modify an user
