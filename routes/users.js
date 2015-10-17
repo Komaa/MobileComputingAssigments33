@@ -1,6 +1,7 @@
 var User = require('../models/user');
 var express = require('express');
 var router = express.Router();
+var bcrypt = require('bcryptjs');
 
 //retrive all the users
 router.route('/users').get(function(req, res) {
