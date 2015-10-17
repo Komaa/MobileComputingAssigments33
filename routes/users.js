@@ -77,7 +77,7 @@ router.route('/users/login').post(function(req, res) {
     if (err) {
       return res.send(err);
     }
-    if(bcrypt.compareSync(req.body.password, user.password))
+    if(bcrypt.compareSync(req.body.password, user.password)&& (user!=null))
       res.json(user);
     else {
       res.json('Not present');
