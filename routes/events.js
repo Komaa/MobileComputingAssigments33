@@ -48,11 +48,14 @@ router.route('/events/copyevent/:id').post(function(req, res) {
     if (err) {
       return res.send(err);
     }
-
+    //retreive the event
     var newEvent=event;
+    //change _id with null
     newEvent._id=null;
+    //set the mongoDB variable isNew to true
     newEvent.isNew = true;
-    newEvent.id_user=req.params.id
+    //add the id of the new user
+    newEvent.id_user=req.params.id;
 
     newEvent.save(function(err) {
     if (err) {
@@ -82,7 +85,7 @@ router.route('/events/:id').put(function(req,res){
     if (err) {
       return res.send(err);
     }
-
+    //for every properties changed in the body
     for (prop in req.body) {
       event[prop] = req.body[prop];
     }
@@ -141,7 +144,7 @@ router.route('/events/search/bydate/:id_user').get(function(req, res) {
 router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 
   var coords = req.query.loc.split(',');
-  //find events withing a 10 km radius
+  //find events withing a req.query.distance km radius
   var maxDist = req.query.distance / 6371;
 
   Event.find({ loc: {$near: coords, $maxDistance: maxDist }, id_user:req.params.id_user}, function(err, event) {
@@ -156,17 +159,17 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
   var email=req.body.mail;
+  //search if the event exist, if not return
   Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
     }
-    console.log(event.name);
+    // search if the inviter exist, if not return
     User.findOne({ _id: req.params.id_user}, function(err, user) {
         if (err) {
           return res.send(err);
         }
-        console.log(user.username);
-        console.log(event.name);
+        //create the trasporter variable in order to send the email
         var transporter = nodemailer.createTransport({
               service: 'Gmail',
               auth: {
@@ -174,20 +177,24 @@ router.route('/events/invite/:id_user').post(function(req, res) {
                   pass: 'mobil3calendar33' // Your password
               }
           });
-
+        // create the body of the message
         var text = 'Greeting from Strax Calendar team! \n\n'+
-        'The user '+ user.username + ' invited you to the event ' + event.name
+        'The user '+ user.username + ' invited you to the event: ' + event.name
+        +'\n\nDetails:\n\n'+
+        '\nDescription:\t'+ event.description
+        +'\nStarting date:\t'+ event.start_time
+        +'\nEnding Date:\t'+ event.end_time
         +'\n\nPlease click on the following link to accept the invitation:\n\n'+
         'www.straxcalendar.com/acceptinvitation/'+ event._id+
         '\n\nBest Regards';
-
+        //create the option of the message
           var mailOptions = {
             from: 'mobilecalendar33@gmail.com', // sender address
             to: email, // list of receivers
             subject: 'Invitation to an event', // Subject line
             text: text //, // plaintext body
         };
-
+        //send the email
         transporter.sendMail(mailOptions, function(error, info){
           if(error){
               console.log(error);
