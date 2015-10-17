@@ -73,12 +73,15 @@ router.route('/users/:id').delete(function(req, res) {
 
 //check if the user is present and in case give back his information
 router.route('/users/login').post(function(req, res) {
-  var hash = bcrypt.hashSync(req.body.password);
-  User.findOne({ username: req.body.username, password: hash}, function(err, user) {
+  User.findOne({ username: req.body.username}, function(err, user) {
     if (err) {
       return res.send(err);
     }
-    res.json(user);
+    if(bcrypt.compareSync(req.body.password, user.password))
+      res.json(user);
+    else {
+      res.json('Not present');
+    }
   });
 });
 
