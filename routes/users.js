@@ -36,6 +36,8 @@ router.route('/users/:id').put(function(req,res){
     //for every properties to change in the body
     for (prop in req.body) {
       user[prop] = req.body[prop];
+      if(prop === "password")
+        user[prop]=bcrypt.hashSync(req.body[prop]);
     }
     // save the user
     user.save(function(err) {
@@ -71,7 +73,7 @@ router.route('/users/:id').delete(function(req, res) {
 
 //check if the user is present and in case give back his information
 router.route('/users/login').post(function(req, res) {
-  User.findOne({ username: req.body.username, password: req.body.password}, function(err, user) {
+  User.findOne({ username: req.body.username, password: bcrypt.hashSync(req.body.password)}, function(err, user) {
     if (err) {
       return res.send(err);
     }
