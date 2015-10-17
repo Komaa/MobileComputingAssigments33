@@ -16,7 +16,8 @@ router.route('/users').get(function(req, res) {
 //insert a new user
 router.route('/users').post(function(req, res) {
   var hash = bcrypt.hashSync(req.body.password);
-  var user = new User({req.body.username,hash});
+  req.body.password=hash;
+  var user = new User(req.body);
   user.save(function(err) {
     if (err) {
       return res.send(err);
