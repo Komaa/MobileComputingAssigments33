@@ -158,7 +158,7 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
-  var email=req.body.mail;
+  var email=req.body.email;
   //search if the event exist, if not return
   Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {
     if (err) {
@@ -180,19 +180,20 @@ router.route('/events/invite/:id_user').post(function(req, res) {
         // create the body of the message
         var text = 'Greeting from Strax Calendar team! \n\n'+
         'The user '+ user.username + ' invited you to the event: ' + event.name
-        +'\n\nDetails:\n\n'+
+        +'\n\nDetails:\n'+
         '\nDescription:\t'+ event.description
-        +'\nStarting date:\t'+ event.start_time
-        +'\nEnding Date:\t'+ event.end_time
-        +'\n\nPlease click on the following link to accept the invitation:\n\n'+
-        'www.straxcalendar.com/acceptinvitation/'+ event._id+
-        '\n\nBest Regards';
+        +'\nStarting date:\t'+ event.start_event
+        +'\nEnding Date:\t'+ event.end_event
+        +'\n\nPlease click on the following link to accept the invitation:\n\n'
+        //the link will point to the web service
+        +'www.straxcalendar.com/acceptinvitation/'+ event._id
+        +'\n\nBest Regards';
         //create the option of the message
           var mailOptions = {
             from: 'mobilecalendar33@gmail.com', // sender address
             to: email, // list of receivers
             subject: 'Invitation to an event', // Subject line
-            text: text //, // plaintext body
+            text: text // plaintext body
         };
         //send the email
         transporter.sendMail(mailOptions, function(error, info){
@@ -201,7 +202,7 @@ router.route('/events/invite/:id_user').post(function(req, res) {
               res.json(error);
           }else{
               console.log('Message sent: ' + info.response);
-              res.json(info.response);
+              res.json('Message sent: ' + info.response);
           };
         });
 
