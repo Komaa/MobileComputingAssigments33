@@ -15,6 +15,7 @@ router.route('/users').get(function(req, res) {
 
 //insert a new user
 router.route('/users').post(function(req, res) {
+  //encrypt the password
   var hash = bcrypt.hashSync(req.body.password);
   req.body.password=hash;
   var user = new User(req.body);
@@ -36,6 +37,7 @@ router.route('/users/:id').put(function(req,res){
     //for every properties to change in the body
     for (prop in req.body) {
       user[prop] = req.body[prop];
+      //if you are modifing the password field encrypt it
       if(prop === "password")
         user[prop]=bcrypt.hashSync(req.body[prop]);
     }
@@ -77,6 +79,7 @@ router.route('/users/login').post(function(req, res) {
     if (err) {
       return res.send(err);
     }
+    //compare if the encrypted password on the DB is the same as the one insered
     if(bcrypt.compareSync(req.body.password, user.password)&& (user!=null))
       res.json(user);
     else {
