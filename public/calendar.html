@@ -1,55 +1,159 @@
-<!-- Latest compiled and minified CSS -->
-<link href='css/index.css' rel='stylesheet' type='text/css'>
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Basic initialization</title>
+</head>
+	<script src="js/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
 
-<script>
-$(document).ready(function(){
-	$("#add_err").css('display', 'none', 'important');
-	 $("#login").click(function(){
-		  username=$("#name").val();
-		  password=$("#word").val();
-		  $.ajax({
-		   type: "POST",
-       format:"json";
-		   url: "http://130.233.42.94:8080/users/login",
-			data: "name="+username+"&pwd="+password,
-		   success: function(html){
-			if(html=='true')    {
-			 //$("#add_err").html("right username or password");
-			 window.location="calendar.html";
-			}
-			else    {
-			$("#add_err").css('display', 'inline', 'important');
-			 $("#add_err").html("<img src='images/alert.png' />Wrong username or password");
-			}
-		   },
-		   beforeSend:function()
-		   {
-			$("#add_err").css('display', 'inline', 'important');
-			$("#add_err").html("<img src='images/ajax-loader.gif' /> Loading...")
-		   }
-		  });
-		return false;
-	});
-});
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+	<link href="css/style.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="css/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+	
+<style type="text/css" media="screen">
+	html, body{
+		margin:0px;
+		padding:0px;
+		height:100%;
+		overflow:hidden;
+	}	
+</style>
+
+<script type="text/javascript" charset="utf-8">
+	function init() {
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
+		scheduler.init('scheduler_here',new Date(),"month");
+
+		scheduler.templates.xml_date = function(value){ return new Date(value); };
+		scheduler.load("/data", "json");	
+
+		var dp = new dataProcessor("/data");
+		dp.init(scheduler);
+		dp.setTransactionMode("POST", false);
+	}
 </script>
 
-<div class="wrapper">
-  <form class="form-signin" id="login" method="POST">
-    <h2 class="form-signin-heading">Login</h2>
-    <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
-    <input type="password" class="form-control" name="password" placeholder="Password" required=""/>
-    <label class="checkbox">
-      <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
-    </label>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-  </form>
-</div>
+<body onload="init();">
 
-<div class="wrapper">
-  <form class="form-signin">
-    <h2 class="form-signin-heading">Register</h2>
-    <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
-    <input type="password" class="form-control" name="password" placeholder="Password" required=""/>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-  </form>
-</div>
+
+ <div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<nav class="navbar navbar-default" role="navigation">
+					<div class="navbar-header">
+						 
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+							 <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+						</button> <a class="navbar-brand" href="#">Brand</a>
+					</div>
+					
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							
+							<li>
+								 <div class="btn-group" style="padding-top: 9px;">
+					 
+									<button class="btn btn-default" type="button">
+										<em class="glyphicon glyphicon-align-left"></em> Left
+									</button> 
+									<button class="btn btn-default" type="button">
+										<em class="glyphicon glyphicon-align-center"></em> Center
+									</button> 
+									<button class="btn btn-default" type="button">
+										<em class="glyphicon glyphicon-align-right"></em> Right
+									</button> 
+									<button class="btn btn-default" type="button">
+										<em class="glyphicon glyphicon-align-justify"></em> Justify
+									</button>
+								</div>
+							</li>
+						
+							<li>
+								<form class="navbar-form navbar-left" role="search"  style="padding-top: 1px;">
+		                        <div class="input-group">
+		                          <input type="text" class="form-control" placeholder="Search" aria-describedby="basic-addonS" name="query" type="text">
+		                          <span class="input-group-addon" id="basic-addonS"><i class="glyphicon glyphicon-search"></i></span>
+		                        </div>
+		                    </form>
+		                    </li>
+                    </ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li>
+								<a href="#">New Event</a>
+							</li>
+							<li class="dropdown">
+								 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Import/Export<strong class="caret"></strong></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="#">Import GoogleCalendar</a>
+									</li>
+									<li>
+										<a href="#">Export GoogleCalendar</a>
+									</li>
+									
+									<li class="divider">
+									</li>
+									<li>
+										<a href="#">Other</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="#">Logout</a>
+							</li>
+						</ul>
+					</div>
+					
+				</nav>
+				
+
+				</div>
+				</div>
+				<div class="row">
+			<div class="col-md-10 col-md-offset-1 col-sm-12">
+				<div class="jumbotron">
+					<div id="scheduler_here" class="dhx_cal_container" style='height:60em;'>
+			<div class="dhx_cal_navline">
+				<div class="dhx_cal_prev_button">&nbsp;</div>
+				<div class="dhx_cal_next_button">&nbsp;</div>
+				<div class="dhx_cal_today_button"></div>
+				<div class="dhx_cal_date"></div>
+				<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+				<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+				<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+			</div>
+			<div class="dhx_cal_header">
+			</div>
+			<div class="dhx_cal_data">
+			</div>
+		</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--
+	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+		<div class="dhx_cal_navline">
+			<div class="dhx_cal_prev_button">&nbsp;</div>
+			<div class="dhx_cal_next_button">&nbsp;</div>
+			<div class="dhx_cal_today_button"></div>
+			<div class="dhx_cal_date"></div>
+			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+		</div>
+		<div class="dhx_cal_header">
+		</div>
+		<div class="dhx_cal_data">
+		</div>
+	</div>-->
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/scripts.js"></script>
+
+
+</body>
