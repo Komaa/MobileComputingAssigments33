@@ -14,6 +14,7 @@ $(document).ready(function(){
 			data: "name="+username+"&pwd="+password,
 		   success: function(html){
 			if(html=='true')    {
+
 			 //$("#add_err").html("right username or password");
 			 window.location="calendar.html";
 			}
@@ -34,7 +35,7 @@ $(document).ready(function(){
 </script>
 
 <div class="wrapper">
-  <form class="form-signin" action="./" id="login" method="post">
+  <form class="form-signin" action="/" id="login" method="post">
     <h2 class="form-signin-heading">Login</h2>
     <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
     <input type="password" class="form-control" name="password" placeholder="Password" required=""/>
