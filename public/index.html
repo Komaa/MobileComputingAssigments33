@@ -11,7 +11,7 @@ $(document).ready(function(){
 		  $.ajax({
 		   type: "POST",
        format:"json";
-		   url: "http://130.233.42.94:8080/users/login",
+		   url: "../users/login",
 			data: "name="+username+"&pwd="+password,
 		   success: function(html){
 			if(html=='true')    {
