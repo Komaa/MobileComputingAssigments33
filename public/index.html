@@ -7,23 +7,19 @@ $(document).ready(function(){
 	$("#add_err").css('display', 'none', 'important');
 	 $("#login").click(function(){
 		  username=$("#username").val();
-      console.log(username);
 		  password=$("#password").val();
-      console.log(password);
 		  $.ajax({
 		   type: "POST",
 		   url: "http://130.233.42.94:8080/api/users/login",
 			data: "username="+username+"&password="+password,
 		   success: function(html){
 			if(html=='true')    {
-        console.log("vai:");
 			 //$("#add_err").html("right username or password");
 			 window.location="calendar.html";
 			}
 			else    {
 			$("#add_err").css('display', 'inline', 'important');
 			 $("#add_err").html("<img src='images/alert.png' />Wrong username or password");
-       console.log("err:");
 			}
 		   },
 		   beforeSend:function()
@@ -34,8 +30,35 @@ $(document).ready(function(){
 		  });
 		return false;
 	});
+  $("#registration").click(function(){
+     username=$("#username").val();
+     password=$("#password").val();
+     $.ajax({
+      type: "POST",
+      url: "http://130.233.42.94:8080/api/users",
+     data: "username="+username+"&password="+password,
+      success: function(html){
+     if(html=='true')    {
+      $("#add_err").html("User created");
+     }
+     else    {
+     $("#add_err").css('display', 'inline', 'important');
+      $("#add_err").html("<img src='images/alert.png' />Something went wrong, try again please");
+     }
+      },
+      beforeSend:function()
+      {
+     $("#add_err").css('display', 'inline', 'important');
+     $("#add_err").html("<img src='images/ajax-loader.gif' /> Loading...")
+      }
+     });
+   return false;
+ });
 });
 </script>
+
+
+<div class="err" id="add_err"></div>
 
 <div class="wrapper">
   <form class="form-signin" action="./" method="post">
