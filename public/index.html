@@ -38,7 +38,7 @@ $(document).ready(function(){
       url: "http://130.233.42.94:8080/api/users",
      data: "username="+username+"&password="+password,
       success: function(html){
-     if(html=='true')    {
+     if(html=='User Added')    {
       $("#add_err").html("User created");
      }
      else    {
