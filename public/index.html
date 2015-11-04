@@ -14,13 +14,14 @@ $(document).ready(function(){
 			data: "name="+username+"&pwd="+password,
 		   success: function(html){
 			if(html=='true')    {
-
+        console.log("vai:");
 			 //$("#add_err").html("right username or password");
 			 window.location="calendar.html";
 			}
 			else    {
 			$("#add_err").css('display', 'inline', 'important');
 			 $("#add_err").html("<img src='images/alert.png' />Wrong username or password");
+       console.log("err:");
 			}
 		   },
 		   beforeSend:function()
