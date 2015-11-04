@@ -23,7 +23,7 @@ router.route('/users').post(function(req, res) {
     if (err) {
       return res.send(err);
     }
-    res.send({ message: 'User Added' });
+    res.send('User Added');
   });
 });
 
