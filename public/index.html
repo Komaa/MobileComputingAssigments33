@@ -6,9 +6,9 @@
 $(document).ready(function(){
 	$("#add_err").css('display', 'none', 'important');
 	 $("#login").click(function(){
-		  username=$("#name").val();
+		  username=$("#username").val();
       console.log(username);
-		  password=$("#word").val();
+		  password=$("#password").val();
       console.log(password);
 		  $.ajax({
 		   type: "POST",
