@@ -80,7 +80,7 @@ router.route('/users/login').post(function(req, res) {
       return res.send(err);
     }
     //compare if the encrypted password on the DB is the same as the one insered
-    if(bcrypt.compareSync(req.body.password, user.password)&& (user!=null))
+    if((user!=null) && bcrypt.compareSync(req.body.password, user.password))
       res.send('true');
     else {
       res.send('false');
