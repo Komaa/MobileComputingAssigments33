@@ -5,7 +5,6 @@ var users = require('./routes/users'); //routes are defined here
 var events = require('./routes/events');
 var app = express(); //Create the Express app
 
-
 //connect to our database
 //Ideally you will obtain DB details from a config file
 var dbName = 'calendarDB';
@@ -18,5 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', users); //This is our route middleware
 app.use('/api', events); //This is our route middleware
+app.use(express.static('public'));
+
 
 module.exports = app;
