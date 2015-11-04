@@ -31,14 +31,14 @@ $(document).ready(function(){
 		return false;
 	});
   $("#registration").click(function(){
-     username=$("#username").val();
-     password=$("#password").val();
-     console.log(username);
-     console.log(password);
+     username=$("#user").val();
+     password=$("#pass").val();
+     console.log(user);
+     console.log(pass);
      $.ajax({
       type: "POST",
       url: "http://130.233.42.94:8080/api/users",
-     data: "username="+username+"&password="+password,
+     data: "username="+user+"&password="+pass,
       success: function(html){
      if(html=='User Added')    {
       $("#add_err").html("User created");
@@ -74,8 +74,8 @@ $(document).ready(function(){
 <div class="wrapper">
   <form class="form-signin" action="./" method="post">
     <h2 class="form-signin-heading">Register</h2>
-    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="" autofocus="" />
-    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required=""/>
+    <input type="text" class="form-control" id="user" name="username" placeholder="Username" required="" autofocus="" />
+    <input type="password" class="form-control" id="pass" name="password" placeholder="Password" required=""/>
     <button class="btn btn-lg btn-primary btn-block" id="registration" type="submit">Register</button>
   </form>
 </div>
