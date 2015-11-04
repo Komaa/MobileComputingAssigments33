@@ -17,7 +17,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', users); //This is our route middleware
 app.use('/api', events); //This is our route middleware
-app.use(express.static('public'));
+app.use(express.static(__dirname + "/public"));
 
+//Handle 404
+app.get("/*", function(req, res, next) {
+    next("Could not find page");
+});
 
 module.exports = app;
