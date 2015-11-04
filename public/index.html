@@ -10,7 +10,7 @@ $(document).ready(function(){
 		  password=$("#word").val();
 		  $.ajax({
 		   type: "POST",
-		   url: "http://130.233.42.94:8080/users/login",
+		   url: "http://130.233.42.94:8080/api/users/login",
 			data: "name="+username+"&pwd="+password,
 		   success: function(html){
 			if(html=='true')    {
