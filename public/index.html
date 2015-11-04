@@ -33,6 +33,8 @@ $(document).ready(function(){
   $("#registration").click(function(){
      username=$("#username").val();
      password=$("#password").val();
+     console.log(username);
+     console.log(password);
      $.ajax({
       type: "POST",
       url: "http://130.233.42.94:8080/api/users",
