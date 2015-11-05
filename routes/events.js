@@ -215,4 +215,26 @@ router.route('/events/invite/:id_user').post(function(req, res) {
   });
 });
 
+
+//export calendar
+router.route('/events/export/:id_user').get(function(req, res) {
+  Event.find({ id_user: req.params.id},function(err, events) {
+    if (err) {
+      return res.send(err);
+    }
+    var googleapis = require('googleapis'),
+    OAuth2Client = googleapis.OAuth2Client,
+    client = '<put your Client ID here!>',
+    secret = '<put your Client secret here!>',
+    redirect = 'http://localhost:3000/oauth2callback',
+    calendar_auth_url = '',
+    oauth2Client = new OAuth2Client(client, secret, redirect);
+
+    exports.ping = function() {
+    console.log('pong');
+    };
+  });
+});
+
+
 module.exports = router;
