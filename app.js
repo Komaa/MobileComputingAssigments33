@@ -21,8 +21,7 @@ app.use(expressSession({secret:'somesecrettokenhere'}));
 
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log(req.originalUrl);
-    console.log(req.method);
+
     var id;
     if(req.method === "POST"){
         if(req.session.userid == null)
@@ -30,8 +29,11 @@ app.use(function (req, res, next) {
         else
           id=req.session.userid;
 
-        if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/copyevent") || (req.originalUrl ==="/events/invite"))
+        if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/copyevent") || (req.originalUrl ==="/events/invite")){
           req.originalUrl=req.originalUrl+"/"+id;
+          console.log(req.originalUrl);
+          console.log(req.method);
+        }
     }
       /*
         /events/:id').get
