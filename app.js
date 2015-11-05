@@ -30,14 +30,14 @@ app.use(function (req, res, next) {
 
       console.log(req.originalUrl);
     if(req.method === "POST"){
-        if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/copyevent") || (req.originalUrl ==="/events/invite")){
+        if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/copyevent") || (req.originalUrl ==="/api/events/invite")){
           req.originalUrl=req.originalUrl+"/"+id;
           console.log(req.originalUrl);
           console.log(req.method);
         }
     }else{
-      if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/search") || (req.originalUrl ==="/events/search/byname") ||
-      (req.originalUrl ==="/events/search/bytype") || (req.originalUrl ==="/events/search/bydate") || (req.originalUrl ==="/events/search/bylocation")){
+      if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/search") || (req.originalUrl ==="/api/events/search/byname") ||
+      (req.originalUrl ==="/api/events/search/bytype") || (req.originalUrl ==="/api/events/search/bydate") || (req.originalUrl ==="/api/events/search/bylocation")){
         req.originalUrl=req.originalUrl+"/"+id;
         console.log(req.originalUrl);
         console.log(req.method);
