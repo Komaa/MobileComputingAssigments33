@@ -28,6 +28,7 @@ app.use(function (req, res, next) {
     else
       id=req.session.userid;
 
+      console.log(req.originalUrl);
     if(req.method === "POST"){
         if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/copyevent") || (req.originalUrl ==="/events/invite")){
           req.originalUrl=req.originalUrl+"/"+id;
