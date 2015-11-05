@@ -18,18 +18,20 @@ mongoose.connect(connectionString);
 app.use(cookieParser());
 app.use(expressSession({secret:'somesecrettokenhere'}));
 //configure body-parser
+
+app.use(function (req, res, next) {
+  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    console.log(fullUrl);
+    next();
+    // action before request
+    // eventually calling `next()`
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', users); //This is our route middleware
 app.use('/api', events); //This is our route middleware
 app.use(express.static(__dirname + "/public"));
-
-app.use(function (req, res, next) {
-  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log(fullUrl);
-    // action before request
-    // eventually calling `next()`
-});
 
 //Handle 404
 app.get("/*", function(req, res, next) {
