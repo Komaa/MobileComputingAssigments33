@@ -22,7 +22,7 @@ app.use(expressSession({secret:'somesecrettokenhere'}));
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     console.log(req.originalUrl);
-    console.log(request.method);
+    console.log(req.method);
     next();
     // action before request
     // eventually calling `next()`
