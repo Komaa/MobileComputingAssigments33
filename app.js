@@ -23,26 +23,25 @@ app.use(function (req, res, next) {
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
     var id;
-    if(req.method === "POST"){
-        if(req.session.userid == null)
-          id=""
-        else
-          id=req.session.userid;
+    if(req.session.userid == null)
+      id=""
+    else
+      id=req.session.userid;
 
+    if(req.method === "POST"){
         if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/copyevent") || (req.originalUrl ==="/events/invite")){
           req.originalUrl=req.originalUrl+"/"+id;
           console.log(req.originalUrl);
           console.log(req.method);
         }
+    }else{
+      if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/search") || (req.originalUrl ==="/events/search/byname") ||
+      (req.originalUrl ==="/events/search/bytype") || (req.originalUrl ==="/events/search/bydate") || (req.originalUrl ==="/events/search/bylocation")){
+        req.originalUrl=req.originalUrl+"/"+id;
+        console.log(req.originalUrl);
+        console.log(req.method);
+      }
     }
-      /*
-        /events/:id').get
-      '/events/search/:id_user').get
-      '/events/search/byname/:id_user').get(
-        '/events/search/bytype/:id_user').get(
-          '/events/search/bydate/:id_user').get(
-            '/events/search/bylocation/:id_user').get
-            */
         next();
 });
 
