@@ -7,7 +7,6 @@ var router = express.Router();
 
 //get all the event
 router.route('/events').get(function(req, res) {
-  console.log(req);
   Event.find(function(err, events) {
     if (err) {
       return res.send(err);
