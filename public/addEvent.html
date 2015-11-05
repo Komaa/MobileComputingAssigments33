@@ -13,13 +13,22 @@ var urlString= "http://130.233.42.94:8080/";
 $(document).ready(function(){
 	$("#add_err").css('display', 'none', 'important');
 	 $("#add").click(function(){
-		  name=$("#name").val();
-		  description=$("#description").val();
-      loc=$("#location").val();
+		  name = $("#name").val();
+		  description = $("#description").val();
+      start_event = $("#start_event").val();
+      end_event = $("#end_event").val();
+    //  loc=$("#location").val();
+      repetition = $("#repetition").val();
+      when_repetition = $("#when_repetition").val();
+      alert = $("#alert").val();
+      when_alert = $("#when_alert").val();
+      type = $("#type").val();
 		  $.ajax({
 		   type: "POST",
 			 url: urlString+"api/events/563b3c7a91685d2e0249b102",
-			 data: "name="+name+"&description="+description+"&loc="loc,
+			 data: "name="+name+"&description="+description+"&start_event="+start_event
+       +"&end_event="+end_event+"&repetition="+repetition+"&when_repetition="+when_repetition
+       +"&alert="+alert+"&when_alert"+when_alert+"&type="+type,
 		   success: function(html){
         if(html=='Event Added')    {
           $("#add_err").html("Event Added");
@@ -51,7 +60,7 @@ $(document).ready(function(){
       <input type="text" class="form-control" id="description" name="description" placeholder="description" required=""/>
       <input type="datetime" class="form-control" id="start_event" name="start_event" placeholder="start_event" />
       <input type="datetime" class="form-control" id="end_event" name="end_event" placeholder="end_event" />
-      <input type="text" class="form-control" id="location" name="location" placeholder="location" />
+      <input type="number" class="form-control" id="location" name="location" placeholder="location" />
       Repeate<input type="radio" class="form-control" id="repetition" name="repetition" value="true" checked/>
       One Time<input type="radio" class="form-control" id="repetition" name="repetition" value="false"/>
       <input type="number" class="form-control" id="when_repetition" name="when_repetition" placeholder="when_repetition" />
