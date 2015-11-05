@@ -3,6 +3,8 @@
 <link href='css/index.css' rel='stylesheet' type='text/css'>
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
+var urlString= "http://130.233.42.94:8080/";
+//var urlString = "http://localhost:8080/";
 $(document).ready(function(){
 	$("#add_err").css('display', 'none', 'important');
 	 $("#login").click(function(){
@@ -10,8 +12,8 @@ $(document).ready(function(){
 		  password=$("#password").val();
 		  $.ajax({
 		   type: "POST",
-		   url: "http://130.233.42.94:8080/api/users/login",
-			data: "username="+username+"&password="+password,
+			 url: urlString+"api/users/login",
+			 data: "username="+username+"&password="+password,
 		   success: function(html){
 			if(html=='true')    {
 			 //$("#add_err").html("right username or password");
@@ -37,7 +39,7 @@ $(document).ready(function(){
      console.log(pass);
      $.ajax({
       type: "POST",
-      url: "http://130.233.42.94:8080/api/users",
+		 url: urlString+"api/users",
      data: "username="+user+"&password="+pass,
       success: function(html){
      if(html=='User Added')    {

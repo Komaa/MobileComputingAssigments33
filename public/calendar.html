@@ -1,7 +1,7 @@
 <!doctype html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>Basic initialization</title>
+	<title>StraxCalendar</title>
 </head>
 	<script src="js/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
 
@@ -12,14 +12,14 @@
 
 	<link rel="stylesheet" href="css/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-	
+
 <style type="text/css" media="screen">
 	html, body{
 		margin:0px;
 		padding:0px;
 		height:100%;
 		overflow:hidden;
-	}	
+	}
 </style>
 
 <script type="text/javascript" charset="utf-8">
@@ -28,7 +28,7 @@
 		scheduler.init('scheduler_here',new Date(),"month");
 
 		scheduler.templates.xml_date = function(value){ return new Date(value); };
-		scheduler.load("/data", "json");	
+		scheduler.load("/data", "json");
 
 		var dp = new dataProcessor("/data");
 		dp.init(scheduler);
@@ -44,33 +44,33 @@
 			<div class="col-md-12">
 				<nav class="navbar navbar-default" role="navigation">
 					<div class="navbar-header">
-						 
+
 						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 							 <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
 						</button> <a class="navbar-brand" href="#">Brand</a>
 					</div>
-					
+
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							
+
 							<li>
 								 <div class="btn-group" style="padding-top: 9px;">
-					 
+
 									<button class="btn btn-default" type="button">
 										<em class="glyphicon glyphicon-align-left"></em> Left
-									</button> 
+									</button>
 									<button class="btn btn-default" type="button">
 										<em class="glyphicon glyphicon-align-center"></em> Center
-									</button> 
+									</button>
 									<button class="btn btn-default" type="button">
 										<em class="glyphicon glyphicon-align-right"></em> Right
-									</button> 
+									</button>
 									<button class="btn btn-default" type="button">
 										<em class="glyphicon glyphicon-align-justify"></em> Justify
 									</button>
 								</div>
 							</li>
-						
+
 							<li>
 								<form class="navbar-form navbar-left" role="search"  style="padding-top: 1px;">
 		                        <div class="input-group">
@@ -82,7 +82,7 @@
                     </ul>
 						<ul class="nav navbar-nav navbar-right">
 							<li>
-								<a href="#">New Event</a>
+								<a href="addEvent.html">New Event</a>
 							</li>
 							<li class="dropdown">
 								 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Import/Export<strong class="caret"></strong></a>
@@ -93,7 +93,7 @@
 									<li>
 										<a href="#">Export GoogleCalendar</a>
 									</li>
-									
+
 									<li class="divider">
 									</li>
 									<li>
@@ -106,9 +106,9 @@
 							</li>
 						</ul>
 					</div>
-					
+
 				</nav>
-				
+
 
 				</div>
 				</div>

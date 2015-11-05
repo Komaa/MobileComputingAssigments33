@@ -1,0 +1,66 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link href='css/index.css' rel='stylesheet' type='text/css'>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<title>Add Event</title>
+</head>
+
+<script>
+var urlString= "http://130.233.42.94:8080/";
+//var urlString = "http://localhost:8080/";
+$(document).ready(function(){
+	$("#add_err").css('display', 'none', 'important');
+	 $("#add").click(function(){
+		  name=$("#name").val();
+		  description=$("#description").val();
+      loc=$("#location").val();
+		  $.ajax({
+		   type: "POST",
+			 url: urlString+"api/events/563b3c7a91685d2e0249b102",
+			 data: "name="+name+"&description="+description+"&loc="loc,
+		   success: function(html){
+        if(html=='Event Added')    {
+          $("#add_err").html("Event Added");
+         }
+			else    {
+			$("#add_err").css('display', 'inline', 'important');
+			 $("#add_err").html("<img src='images/alert.png' />Error");
+			}
+		   },
+		   beforeSend:function()
+		   {
+			$("#add_err").css('display', 'inline', 'important');
+			$("#add_err").html("<img src='images/ajax-loader.gif' /> Loading...")
+		   }
+		  });
+		return false;
+	});
+
+
+});
+</script>
+
+<body>
+
+  <div class="wrapper">
+    <form class="form-signin" action="./" method="post">
+      <h2 class="form-signin-heading">Add New Event</h2>
+      <input type="text" class="form-control" id="name" name="name" placeholder="name" required="" autofocus="" />
+      <input type="text" class="form-control" id="description" name="description" placeholder="description" required=""/>
+      <input type="datetime" class="form-control" id="start_event" name="start_event" placeholder="start_event" />
+      <input type="datetime" class="form-control" id="end_event" name="end_event" placeholder="end_event" />
+      <input type="text" class="form-control" id="location" name="location" placeholder="location" />
+      Repeate<input type="radio" class="form-control" id="repetition" name="repetition" value="true" checked/>
+      One Time<input type="radio" class="form-control" id="repetition" name="repetition" value="false"/>
+      <input type="number" class="form-control" id="when_repetition" name="when_repetition" placeholder="when_repetition" />
+      Alert<input type="radio" class="form-control" id="alert" name="alert" value="true" checked/>
+      Don't Alert Please<input type="radio" class="form-control" id="alert" name="alert" value="false" />
+      <input type="date" class="form-control" id="when_alert" name="when_alert" placeholder="when_alert" />
+      <input type="text" class="form-control" id="type" name="type" placeholder="type" />
+      <button class="btn btn-lg btn-primary btn-block" id="add" type="submit">ADD</button>
+    </form>
+  </div>
+
+</body>
