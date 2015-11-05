@@ -24,6 +24,14 @@ app.use('/api', users); //This is our route middleware
 app.use('/api', events); //This is our route middleware
 app.use(express.static(__dirname + "/public"));
 
+app.use(function (req, res, next) {
+    console.log(r.uri.href);
+    console.log(res.request.uri.href);
+
+    // action before request
+    // eventually calling `next()`
+});
+
 //Handle 404
 app.get("/*", function(req, res, next) {
     next("Could not find page");
