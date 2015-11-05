@@ -28,9 +28,14 @@ router.route('/events/:id').get(function(req, res) {
 //insert an event
 router.route('/events/:id').post(function(req, res) {
   _ = require('underscore');
-
+var cordi;
  //send in the format loc = 22.9,-10 in body of Post request
-  var cordi = req.body.loc.split(',');
+ if(req.body.loc != null)
+    cordi = req.body.loc.split(',');
+  else{
+    cordi[0]=0;
+    cordi[1]=1;
+  }
 
   var event = new Event(_.extend({ id_user: req.params.id }, req.body,{loc:cordi}));
   event.save(function(err) {

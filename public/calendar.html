@@ -30,7 +30,7 @@
 		scheduler.templates.xml_date = function(value){ return new Date(value); };
 		scheduler.load("/data", "json");
 
-		var dp = new dataProcessor("/data");
+		var dp = new dataProcessor("/events");
 		dp.init(scheduler);
 		dp.setTransactionMode("POST", false);
 	}
