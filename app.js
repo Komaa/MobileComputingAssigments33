@@ -12,6 +12,8 @@ var connectionString = 'mongodb://localhost:27017/' + dbName;
 
 mongoose.connect(connectionString);
 
+app.use(express.cookieParser());
+app.use(express.session({secret: '1234567890QWERTY'}));
 //configure body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
