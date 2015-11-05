@@ -5,6 +5,7 @@ var users = require('./routes/users'); //routes are defined here
 var events = require('./routes/events');
 var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
 var expressSession = require('express-session');
+var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 var app = express(); //Create the Express app
 
 //connect to our database
