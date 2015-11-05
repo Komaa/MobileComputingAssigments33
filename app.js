@@ -23,9 +23,25 @@ app.use(function (req, res, next) {
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     console.log(req.originalUrl);
     console.log(req.method);
-    next();
-    // action before request
-    // eventually calling `next()`
+    var id;
+    if(req.method === "POST"){
+        if(req.session.userid == null)
+          id=""
+        else
+          id=req.session.userid;
+
+        if((req.originalUrl ==="/events") || (req.originalUrl ==="/events/copyevent") || (req.originalUrl ==="/events/invite"))
+          req.originalUrl=req.originalUrl+"/"+id;
+    }
+      /*
+        /events/:id').get
+      '/events/search/:id_user').get
+      '/events/search/byname/:id_user').get(
+        '/events/search/bytype/:id_user').get(
+          '/events/search/bydate/:id_user').get(
+            '/events/search/bylocation/:id_user').get
+            */
+        next();
 });
 
 app.use(bodyParser.json());
