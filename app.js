@@ -25,9 +25,8 @@ app.use('/api', events); //This is our route middleware
 app.use(express.static(__dirname + "/public"));
 
 app.use(function (req, res, next) {
-    console.log(r.uri.href);
-    console.log(res.request.uri.href);
-
+  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    console.log(fullUrl);
     // action before request
     // eventually calling `next()`
 });
