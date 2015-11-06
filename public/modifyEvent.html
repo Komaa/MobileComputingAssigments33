@@ -1,0 +1,66 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link href='css/index.css' rel='stylesheet' type='text/css'>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<title>Modify Event</title>
+</head>
+
+<script>
+//var urlString= "http://130.233.42.94:8080/";
+//var urlString = "http://localhost:8080/";
+
+
+$(document).ready(function(){
+	$("#add_err").css('display', 'none', 'important');
+	 $("#modify").click(function(){
+		  name = $("#name").val();
+		  description = $("#description").val();
+      start_event = $("#start_event").val();
+      end_event = $("#end_event").val();
+    //  loc=$("#location").val();
+      repetition = $("#repetition").val();
+      when_repetition = $("#when_repetition").val();
+      alert = $("#alert").val();
+      when_alert = $("#when_alert").val();
+      type = $("#type").val();
+		  $.ajax({
+		   type: "PUT",
+			 url: "/api/events/563bad056eed6e1e07e7630d",
+			 data: "name="+name,
+		   success: function(html){
+				 console.log(html);
+        if(html=='Event Added')    {
+          $("#add_err").html("Event Added");
+         }
+			else    {
+			$("#add_err").css('display', 'inline', 'important');
+			 $("#add_err").html("<img src='images/alert.png' />Error");
+			}
+		   },
+		   beforeSend:function()
+		   {
+			$("#add_err").css('display', 'inline', 'important');
+			$("#add_err").html("<img src='images/ajax-loader.gif' /> Loading...")
+		   }
+		  });
+		return false;
+	});
+
+
+});
+</script>
+
+<body >
+
+  <div class="wrapper">
+    <form class="form-signin" action="./" method="post">
+      <h2 class="form-signin-heading">Modify Event</h2>
+      <input type="text" class="form-control" id="name" name="name" placeholder="name" required="" autofocus="" />
+
+      <button class="btn btn-lg btn-primary btn-block" id="modify" type="submit">Modify</button>
+    </form>
+  </div>
+
+</body>
