@@ -218,7 +218,11 @@ router.route('/events/invite/:id_user').post(function(req, res) {
   });
 });
 
+//syncronizing to google calendar
+router.route('/events/syncronize/from/:id_user').get(function(req, res) {
 
+
+});
 
 
 
