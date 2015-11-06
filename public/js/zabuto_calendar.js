@@ -384,24 +384,61 @@ $.fn.zabuto_calendar = function (options) {
                 url: ajaxSettings.url,
                 dataType: 'json'
             }).done(function (response) {
-                var events = [];
-                var m = new Map();
+              var events = [];
+              var myMap = new Map();
+              var s_event={};
+              $.each(response, function (k, v) {
+                  var test=new Date(response[k].start_event);
+                  var shortdate=test.getFullYear()+"-"+(test.getMonth()+1)+"-"+test.getDate();
+                  s_event.name=response[k].name;
+                  s_event.description=response[k].description;
+                  s_event.start_event=response[k].start_event;
+                  s_event.end_event=response[k].end_event;
+                  s_event.repetition=response[k].repetition;
+                  s_event.when_repetition=response[k].when_repetition;
+                  s_event.alert=response[k].alert;
+                  s_event.when_alert=response[k].when_alert;
+                  s_event.type=response[k].type;
+                  s_event.id=response[k]._id;
 
-                $.each(response, function (k, v) {
-                    m.set(response[k].start_event, response[k])
+                  var arrayevent=myMap.get(shortdate);
 
+                  if(arrayevent === undefined){
 
-                    test=new Date(response[k].start_event);
-                    response[k].date=test.getFullYear()+"-"+(test.getMonth()+1)+"-"+test.getDate();
-                    response[k].title=response[k].name;
+                    var newarray=[];
+                    newarray.push(s_event);
+                    myMap.set(shortdate,newarray);
+                  }else{
+                    arrayevent.push(s_event);
+                    myMap.set(shortdate,arrayevent);
+                  }
+                  //console.log(response[k]);
+              });
 
-                    response[k].body="<p>" + response[k].description + "<\/p>";
-                    response[k].body += accoda_button(response[k]._id);
-                    response[k].footer="At "+ response[k].location;
+              myMap.forEach(function(value, key) {
+                  var groupevent={};
+                  groupevent.date=key;
+                  groupevent.title="Events of the day:";
+                  groupevent.body="";
 
-                    console.log(response[k]);
-                    events.push(response[k]);
-                });
+                  for(i=0; i<value.length;i++){
+                    groupevent.body+="<div class=\"single_event\"><p> Title: " + value[i].name + "<\/p>";
+                    groupevent.body+="<p> Description: " + value[i].description + "<\/p>";
+                    groupevent.body+="<p> Start of the event: " + value[i].start_event + "<\/p>";
+                    groupevent.body+="<p> End of the event: " + value[i].end_event + "<\/p>";
+                    groupevent.body+="<p> Repetition: " + value[i].repetition + "<\/p>";
+                    groupevent.body+="<p> When to repeat: " + value[i].when_repetition + "<\/p>";
+                    groupevent.body+="<p> Alert: " + value[i].alert + "<\/p>";
+                    groupevent.body+="<p> When to notify the alert: " + value[i].when_alert + "<\/p>";
+                    groupevent.body+="<p> Type of the event: " + value[i].type + "<\/p>";
+                    groupevent.body+=accoda_button(value[i].id);
+                    groupevent.body+="</div>";
+                  }
+                  groupevent.footer="Events of the day";
+                  console.log(groupevent);
+                  events.push(groupevent);
+              }, myMap)
+
                 $calendarElement.data('events', events);
                 drawEvents($calendarElement, 'ajax');
             });
@@ -414,8 +451,9 @@ $.fn.zabuto_calendar = function (options) {
         function accoda_button(id) {
           var str;
           str = "<form action=\"demo_form.asp\" method=\"post\">";
-          str += "<input type=\"hidden\" value=\""+id +"\">";
-          str += "<input type=\"submit\" value=\"Edit\">";
+          str += "<input type=\"hidden\" value=\""+id +"\" name=\"id\">";
+          str += "<input class=\"btn btn-primary\" type=\"submit\" value=\"Edit\" name=\"action\">";
+          str += "<input class=\"btn btn-danger\" type=\"submit\" value=\"Delete\" name=\"action\">";
           str += "</form>";
           return str;
 
