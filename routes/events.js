@@ -29,17 +29,18 @@ router.route('/events').get(function(req, res) {
 
 //insert an event
 router.route('/events/:id').post(function(req, res) {
+  console.log(req.body);
   _ = require('underscore');
 var cordi;
  //send in the format loc = 22.9,-10 in body of Post request
- if(req.body.loc != null)
+/* if(req.body.loc !== 'undefined')
     cordi = req.body.loc.split(',');
   else{
     cordi[0]=0;
-    cordi[1]=1;
-  }
+    cordi[1]=0;
+  }*/
 
-  var event = new Event(_.extend({ id_user: req.params.id }, req.body,{loc:cordi}));
+  var event = new Event(_.extend({ id_user: req.params.id }, req.body/*,{loc:cordi}*/));
   event.save(function(err) {
     if (err) {
       return res.send(err);

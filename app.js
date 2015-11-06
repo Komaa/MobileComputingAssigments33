@@ -18,9 +18,12 @@ mongoose.connect(connectionString);
 app.use(cookieParser());
 app.use(expressSession({secret:'somesecrettokenhere'}));
 //configure body-parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
 
     var id;
     if(req.session.userid == null)
@@ -28,12 +31,15 @@ app.use(function (req, res, next) {
     else
       id=req.session.userid;
 
-      console.log(req.originalUrl);
     if(req.method === "POST"){
+        //console.log(req.body);
         if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/copyevent") || (req.originalUrl ==="/api/events/invite")){
           req.originalUrl=req.originalUrl+"/"+id;
           req.params.id = id;
-          res.redirect(req.originalUrl);
+          console.log(req.originalUrl);
+          res.redirect(307,req.originalUrl);
+        }else{
+          next();
         }
     }else{
       if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/search") || (req.originalUrl ==="/api/events/search/byname") ||
@@ -41,13 +47,12 @@ app.use(function (req, res, next) {
         req.originalUrl=req.originalUrl+"/"+id;
         req.params.id = id;
         res.redirect(req.originalUrl);
+      }else{
+        next();
       }
     }
-        next();
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', users); //This is our route middleware
 app.use('/api', events); //This is our route middleware
 app.use(express.static(__dirname + "/public"));
