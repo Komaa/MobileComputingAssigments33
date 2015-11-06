@@ -386,8 +386,9 @@ $.fn.zabuto_calendar = function (options) {
             }).done(function (response) {
               var events = [];
               var myMap = new Map();
-              var s_event={};
+
               $.each(response, function (k, v) {
+                  var s_event={};
                   var test=new Date(response[k].start_event);
                   var shortdate=test.getFullYear()+"-"+(test.getMonth()+1)+"-"+test.getDate();
                   s_event.name=response[k].name;
@@ -433,6 +434,8 @@ $.fn.zabuto_calendar = function (options) {
                     groupevent.body+="<p> Type of the event: " + value[i].type + "<\/p>";
                     groupevent.body+=accoda_button(value[i].id);
                     groupevent.body+="</div>";
+                    if(value[i].alert)
+                      groupevent.badge=true;
                   }
                   groupevent.footer="Events of the day";
                   console.log(groupevent);
