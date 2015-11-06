@@ -4,14 +4,11 @@
 	<title>StraxCalendar</title>
 </head>
 	<script src="js/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
-
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
-
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+	<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="css/zabuto_calendar.min.css">
 	<link href="css/style.css" rel="stylesheet">
-
-	<link rel="stylesheet" href="css/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">
-
 
 <style type="text/css" media="screen">
 	html, body{
@@ -21,22 +18,7 @@
 		overflow:hidden;
 	}
 </style>
-
-<script type="text/javascript" charset="utf-8">
-	function init() {
-		scheduler.config.xml_date="%Y-%m-%d %H:%i";
-		scheduler.init('scheduler_here',new Date(),"month");
-
-		scheduler.templates.xml_date = function(value){ return new Date(value); };
-		scheduler.load("/data", "json");
-
-		var dp = new dataProcessor("/events");
-		dp.init(scheduler);
-		dp.setTransactionMode("POST", false);
-	}
-</script>
-
-<body onload="init();">
+<body>
 
 
  <div class="container-fluid">
@@ -82,7 +64,7 @@
                     </ul>
 						<ul class="nav navbar-nav navbar-right">
 							<li>
-								<a href="addEvent.html">New Event</a>
+								<a href="addEvent.html">Newww Event</a>
 							</li>
 							<li class="dropdown">
 								 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Import/Export<strong class="caret"></strong></a>
@@ -115,45 +97,78 @@
 				<div class="row">
 			<div class="col-md-10 col-md-offset-1 col-sm-12">
 				<div class="jumbotron">
-					<div id="scheduler_here" class="dhx_cal_container" style='height:60em;'>
-			<div class="dhx_cal_navline">
-				<div class="dhx_cal_prev_button">&nbsp;</div>
-				<div class="dhx_cal_next_button">&nbsp;</div>
-				<div class="dhx_cal_today_button"></div>
-				<div class="dhx_cal_date"></div>
-				<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-				<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-				<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
-			</div>
-			<div class="dhx_cal_header">
-			</div>
-			<div class="dhx_cal_data">
-			</div>
-		</div>
+					<!-- define the calendar element -->
+					<div id="my-calendar"></div>
+					<div id="date-popover" class="popover top" style="...">
+    <div id="date-popover-content" class="popover-content"></div>
+</div>
 				</div>
 			</div>
 		</div>
 	</div>
-<!--
-	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
-		<div class="dhx_cal_navline">
-			<div class="dhx_cal_prev_button">&nbsp;</div>
-			<div class="dhx_cal_next_button">&nbsp;</div>
-			<div class="dhx_cal_today_button"></div>
-			<div class="dhx_cal_date"></div>
-			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
-		</div>
-		<div class="dhx_cal_header">
-		</div>
-		<div class="dhx_cal_data">
-		</div>
-	</div>-->
 
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/scripts.js"></script>
+
+	<script src="js/zabuto_calendar.js"></script>
+
+	<!-- initialize the calendar on ready -->
+	<script type="application/javascript">
+	var urlString= "http://localhost:8080/";
+	var eventd = [
+    {"date":"2015-11-01","badge":false,"title":"Example 1"},
+		{
+    "date":"2015-11-06",
+    "badge":false,
+    "title":"Tonight",
+    "body":"<p class=\"lead\">Party<\/p><p>Like it's 1999.<\/p>",
+    "footer":"At Paisley Park"
+  },
+    {"date":"2015-11-02","badge":false,"name":"Example 2"}
+];
+	    $(document).ready(function () {
+	        $("#my-calendar").zabuto_calendar({
+						action: function () {
+                return myDateFunction(this.id, false);
+            },
+						ajax: {
+                url: urlString+"api/events",
+                modal: true
+            },
+			cell_border: true,
+			legend: [
+                {type: "text", label: "Special event", badge: "00"},
+                {type: "block", label: "Regular event"}
+            ],
+      today: true,
+      show_days: true,
+      weekstartson: 1,
+      nav_icon: {
+        prev: '<i class="fa fa-chevron-circle-left"></i>',
+        next: '<i class="fa fa-chevron-circle-right"></i>'
+      }
+					});
+	    });
+
+			function myDateFunction(id, fromModal) {
+        $("#date-popover").hide();
+        if (fromModal) {
+            $("#" + id + "_modal").modal("hide");
+        }
+        var date = $("#" + id).data("date");
+        var hasEvent = $("#" + id).data("hasEvent");
+        if (hasEvent && !fromModal) {
+					return false;
+        }else{
+        $("#date-popover-content").html('You clicked on date ' + date);
+        $("#date-popover").show();
+				}
+        return true;
+    }
+
+
+	</script>
 
 
 </body>

@@ -3,7 +3,7 @@
 <link href='css/index.css' rel='stylesheet' type='text/css'>
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
-var urlString= "http://130.233.42.94:8080/";
+var urlString= "http://localhost:8080/";
 //var urlString = "http://localhost:8080/";
 $(document).ready(function(){
 	$("#add_err").css('display', 'none', 'important');
@@ -47,13 +47,13 @@ $(document).ready(function(){
      }
      else    {
      $("#add_err").css('display', 'inline', 'important');
-      $("#add_err").html("<img src='images/alert.png' />Something went wrong, try again please");
+      $("#add_err").html("Something went wrong, try again please");
      }
       },
       beforeSend:function()
       {
      $("#add_err").css('display', 'inline', 'important');
-     $("#add_err").html("<img src='images/ajax-loader.gif' /> Loading...")
+     $("#add_err").html("Loading...")
       }
      });
    return false;
