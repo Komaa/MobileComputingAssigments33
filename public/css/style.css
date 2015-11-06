@@ -1,3 +1,9 @@
 * {
    outline: 0;
 }
+
+.single_event {
+
+
+  border-bottom:1px solid #ccc;
+}
