@@ -5,9 +5,11 @@ var nodemailer = require('nodemailer');
 var extend = require('util')._extend;
 var router = express.Router();
 
-//get all the event
-router.route('/events').get(function(req, res) {
-  Event.find(function(err, events) {
+
+
+//get all the events related to a user
+router.route('/events/:id').get(function(req, res) {
+  Event.find({ id_user: req.params.id},function(err, events) {
     if (err) {
       return res.send(err);
     }
@@ -15,9 +17,9 @@ router.route('/events').get(function(req, res) {
   });
 });
 
-//get all the events related to a user
-router.route('/events/:id').get(function(req, res) {
-  Event.find({ id_user: req.params.id},function(err, events) {
+//get all the event
+router.route('/events').get(function(req, res) {
+  Event.find(function(err, events) {
     if (err) {
       return res.send(err);
     }

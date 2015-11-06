@@ -32,15 +32,15 @@ app.use(function (req, res, next) {
     if(req.method === "POST"){
         if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/copyevent") || (req.originalUrl ==="/api/events/invite")){
           req.originalUrl=req.originalUrl+"/"+id;
-          console.log(req.originalUrl);
-          console.log(req.method);
+          req.params.id = id;
+          res.redirect(req.originalUrl);
         }
     }else{
       if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/search") || (req.originalUrl ==="/api/events/search/byname") ||
       (req.originalUrl ==="/api/events/search/bytype") || (req.originalUrl ==="/api/events/search/bydate") || (req.originalUrl ==="/api/events/search/bylocation")){
         req.originalUrl=req.originalUrl+"/"+id;
-        console.log(req.originalUrl);
-        console.log(req.method);
+        req.params.id = id;
+        res.redirect(req.originalUrl);
       }
     }
         next();
