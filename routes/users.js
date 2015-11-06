@@ -89,4 +89,9 @@ router.route('/users/login').post(function(req, res) {
   });
 });
 
+router.route('/users/logout').post(function(req, res) {
+  req.session.destroy();
+  res.send('true');
+});
+
 module.exports = router;

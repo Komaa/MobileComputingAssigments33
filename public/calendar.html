@@ -8,6 +8,35 @@
 	<link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" type="text/css" href="css/zabuto_calendar.min.css">
 	<link href="css/style.css" rel="stylesheet">
+	<script>
+	var urlString= "http://localhost:8080/";
+	$(document).ready(function(){
+		$("#add_err").css('display', 'none', 'important');
+
+		 function logout(){
+			  $.ajax({
+			   type: "DELETE",
+				 url: urlString+"api/users/logout",
+			   success: function(html){
+				if(html=='true')    {
+				 //$("#add_err").html("right username or password");
+				 window.location="index.html";
+				}
+				else    {
+				$("#add_err").css('display', 'inline', 'important');
+				 $("#add_err").html("Something went wrong with the logout");
+				}
+			   },
+			   beforeSend:function()
+			   {
+				$("#add_err").css('display', 'inline', 'important');
+				$("#add_err").html("Logging out...")
+			   }
+			  });
+				
+			return false;
+		});
+</script>
 
 <style type="text/css" media="screen">
 	html, body{
@@ -19,6 +48,7 @@
 </style>
 <body>
 
+<div class="err" id="add_err"></div>
 
  <div class="container-fluid">
 		<div class="row">
@@ -28,38 +58,12 @@
 
 						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 							 <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-						</button> <a class="navbar-brand" href="#">Brand</a>
+						</button> <a class="navbar-brand" href="#">Strax Calendar</a>
 					</div>
 
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
 
-							<li>
-								 <div class="btn-group" style="padding-top: 9px;">
-
-									<button class="btn btn-default" type="button">
-										<em class="glyphicon glyphicon-align-left"></em> Left
-									</button>
-									<button class="btn btn-default" type="button">
-										<em class="glyphicon glyphicon-align-center"></em> Center
-									</button>
-									<button class="btn btn-default" type="button">
-										<em class="glyphicon glyphicon-align-right"></em> Right
-									</button>
-									<button class="btn btn-default" type="button">
-										<em class="glyphicon glyphicon-align-justify"></em> Justify
-									</button>
-								</div>
-							</li>
-
-							<li>
-								<form class="navbar-form navbar-left" role="search"  style="padding-top: 1px;">
-		                        <div class="input-group">
-		                          <input type="text" class="form-control" placeholder="Search" aria-describedby="basic-addonS" name="query" type="text">
-		                          <span class="input-group-addon" id="basic-addonS"><i class="glyphicon glyphicon-search"></i></span>
-		                        </div>
-		                    </form>
-		                    </li>
                     </ul>
 						<ul class="nav navbar-nav navbar-right">
 							<li>
@@ -74,16 +78,10 @@
 									<li>
 										<a href="#">Export GoogleCalendar</a>
 									</li>
-
-									<li class="divider">
-									</li>
-									<li>
-										<a href="#">Other</a>
-									</li>
 								</ul>
 							</li>
 							<li>
-								<a href="#">Logout</a>
+								<a href="http://localhost:8080/" onclick="logout();">Logout</a>
 							</li>
 						</ul>
 					</div>
