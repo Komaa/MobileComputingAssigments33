@@ -18,7 +18,7 @@ $(document).ready(function(){
   var getdata=$.ajax({
     type: "GET",
     url: "/api/events/search",
-    data: "id="+"563bad056eed6e1e07e7630d",
+    data: "id="+"563e412baa0b73a00bb2dedc",
     dataType : "json",
     success: function(data){
 
@@ -36,23 +36,30 @@ $(document).ready(function(){
   });
 
 	 $("#modify").click(function(){
+		 name = $("#name").val();
+		 description = $("#description").val();
+		 start_event = $("#start_event").val();
+		 end_event = $("#end_event").val();
+	 //  loc=$("#location").val();
+		 repetition=$("#repetition").is(':checked');
 
-
-
-		  name = $("#name").val();
-		  description = $("#description").val();
-      start_event = $("#start_event").val();
-      end_event = $("#end_event").val();
-    //  loc=$("#location").val();
-      repetition = $("#repetition").val();
-      when_repetition = $("#when_repetition").val();
-      alert = $("#alert").val();
-      when_alert = $("#when_alert").val();
-      type = $("#type").val();
+		 when_repetition = $("#when_repetition").val();
+		 alert = $("#alert").is(':checked');
+		 when_alert = $("#when_alert").val();
+		 type = $("#type").val();
+		 var sendData="name="+name+"&description="+description+"&start_event="+start_event+"&end_event="+end_event+"&repetition="+repetition;
+		 if($("#repetition").is(':checked')){
+			 sendData=sendData+"&when_repetition="+when_repetition;
+		 }
+		 sendData=sendData+"&alert="+alert;
+		 if($("#alert").is(':checked')){
+			 sendData=sendData+"&when_alert="+when_alert;
+		 }
+		 sendData=sendData+"&type="+type;
 		  $.ajax({
 		   type: "PUT",
 			 url: "/api/events",
-			 data: "name="+name+"&description="+description+"&start_event="+start_event+"&end_event="+end_event+"&repetition="+repetition+"&when_repetition="+when_repetition+"&alert="+alert+"&when_alert"+when_alert+"&type="+type,
+			 data: sendData,
 		   success: function(data){
          alert("Event Modified");
         if(html=='Event Added')    {
@@ -81,15 +88,13 @@ $(document).ready(function(){
   <div class="wrapper">
     <form class="form-signin" action="./" method="post">
       <h2 class="form-signin-heading">Modify Event</h2>
-      <input type="text" class="form-control" id="name" name="name" placeholder="name" required="" autofocus="" />
+			<input type="text" class="form-control" id="name" name="name" placeholder="name" required="" autofocus="" />
       <input type="text" class="form-control" id="description" name="description" placeholder="description" required=""/>
       <input type="datetime" class="form-control" id="start_event" name="start_event" placeholder="start_event" />
       <input type="datetime" class="form-control" id="end_event" name="end_event" placeholder="end_event" />
-      Repeate<input type="radio" class="form-control" id="repetition" name="repetition" value="true" />
-      One Time<input type="radio" class="form-control" id="repetition" name="repetition" value="false"/>
+      Repetition<input type="checkbox" class="form-control" id="repetition" name="repetition"/>
       <input type="number" class="form-control" id="when_repetition" name="when_repetition" placeholder="when_repetition" />
-      Alert<input type="radio" class="form-control" id="alert" name="alert" value="true" />
-      Don't Alert Please<input type="radio" class="form-control" id="alert" name="alert" value="false" />
+      Alert<input type="checkbox" class="form-control" id="alert" name="alert"/>
       <input type="date" class="form-control" id="when_alert" name="when_alert" placeholder="when_alert" />
       <input type="text" class="form-control" id="type" name="type" placeholder="type" />
       <button class="btn btn-lg btn-primary btn-block" id="modify" type="submit">Modify</button>
