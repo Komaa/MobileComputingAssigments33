@@ -1,0 +1,38 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link href='css/index.css' rel='stylesheet' type='text/css'>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<title>Delete Event</title>
+</head>
+
+<script>
+$(document).ready(function(){
+  $("#delete").click(function(){
+    $.ajax({
+     type: "DELETE",
+     url: "/api/events",
+     success: function(data){
+       alert("Event Deleted");
+     },
+     failure: function(){
+       alert("Event NOT Deleted");
+     },
+   });
+  return false;
+  });
+
+});
+
+</script>
+
+<body >
+
+  <div class="wrapper">
+    <form class="form-signin" action="./" method="post">
+      <button class="btn btn-lg btn-primary btn-block" id="delete" type="submit">Delete</button>
+    </form>
+  </div>
+
+</body>
