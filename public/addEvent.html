@@ -18,23 +18,34 @@ $(document).ready(function(){
       start_event = $("#start_event").val();
       end_event = $("#end_event").val();
     //  loc=$("#location").val();
-      repetition = $("#repetition").val();
+      repetition=$("#repetition").is(':checked');
+
       when_repetition = $("#when_repetition").val();
-      alert = $("#alert").val();
+      alert = $("#alert").is(':checked');
       when_alert = $("#when_alert").val();
       type = $("#type").val();
+			var sendData="name="+name+"&description="+description+"&start_event="+start_event+"&end_event="+end_event+"&repetition="+repetition;
+			if($("#repetition").is(':checked')){
+				sendData=sendData+"&when_repetition="+when_repetition;
+			}
+			sendData=sendData+"&alert="+alert;
+			if($("#alert").is(':checked')){
+				sendData=sendData+"&when_alert="+when_alert;
+			}
+			sendData=sendData+"&type="+type;
 		  $.ajax({
 		   type: "POST",
 			 url: "/api/events",
-			 data: "name="+name+"&description="+description+"&start_event="+start_event+"&end_event="+end_event+"&repetition="+repetition+"&when_repetition="+when_repetition+"&alert="+alert+"&when_alert"+when_alert+"&type="+type,
-		   success: function(html){
-        if(html=='Event Added')    {
+			 data: sendData,
+		   success: function(data){
+				 alert("Event Added");
+      /*  if(html=='Event Added')    {
           $("#add_err").html("Event Added");
          }
 			else    {
 			$("#add_err").css('display', 'inline', 'important');
 			 $("#add_err").html("<img src='images/alert.png' />Error");
-			}
+		 }*/
 		   },
 		   beforeSend:function()
 		   {
@@ -58,12 +69,9 @@ $(document).ready(function(){
       <input type="text" class="form-control" id="description" name="description" placeholder="description" required=""/>
       <input type="datetime" class="form-control" id="start_event" name="start_event" placeholder="start_event" />
       <input type="datetime" class="form-control" id="end_event" name="end_event" placeholder="end_event" />
-      <input type="text" class="form-control" id="location" name="location" placeholder="location" />
-      Repeate<input type="radio" class="form-control" id="repetition" name="repetition" value="true" checked/>
-      One Time<input type="radio" class="form-control" id="repetition" name="repetition" value="false"/>
+      Repetition<input type="checkbox" class="form-control" id="repetition" name="repetition"/>
       <input type="number" class="form-control" id="when_repetition" name="when_repetition" placeholder="when_repetition" />
-      Alert<input type="radio" class="form-control" id="alert" name="alert" value="true" checked/>
-      Don't Alert Please<input type="radio" class="form-control" id="alert" name="alert" value="false" />
+      Alert<input type="checkbox" class="form-control" id="alert" name="alert"/>
       <input type="date" class="form-control" id="when_alert" name="when_alert" placeholder="when_alert" />
       <input type="text" class="form-control" id="type" name="type" placeholder="type" />
       <button class="btn btn-lg btn-primary btn-block" id="add" type="submit">ADD</button>
