@@ -24,7 +24,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
-
     var id;
     if(req.session.userid == null)
       id=""
@@ -42,12 +41,20 @@ app.use(function (req, res, next) {
           next();
         }
     }else{
-      if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/search") || (req.originalUrl ==="/api/events/search/byname") ||
+      if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/search/byname") ||
       (req.originalUrl ==="/api/events/search/bytype") || (req.originalUrl ==="/api/events/search/bydate") || (req.originalUrl ==="/api/events/search/bylocation")){
         req.originalUrl=req.originalUrl+"/"+id;
         req.params.id = id;
         console.log(req.originalUrl);
         res.redirect(req.originalUrl);
+      }else if ((((req.originalUrl).indexOf("/api/events/search")) >= 0 ) && (((req.originalUrl).indexOf("/api/events/search/"+id)) < 0 ) ) {
+        var urlSplit= req.originalUrl.split("?");
+        var newUrl= urlSplit[0]+"/"+id+"?"+urlSplit[1];
+        req.originalUrl=newUrl;
+        req.params.id = id;
+        console.log(req.originalUrl);
+        res.redirect(req.originalUrl);
+
       }else{
         console.log(req.originalUrl);
         next();

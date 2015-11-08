@@ -103,13 +103,14 @@ router.route('/events/:id').put(function(req,res){
         return res.send(err);
       }
 
-      res.json({ message: 'Event updated!' });
+      res.send("Event Updated");
     });
   });
 });
 
 //retriving a event by id
 router.route('/events/search/:id_user').get(function(req, res) {
+  console.log("here : "+req.query.id);
   Event.findOne({ _id:req.query.id, id_user:req.params.id_user}, function(err, event) {
     if (err) {
       return res.send(err);
@@ -166,6 +167,7 @@ router.route('/events/search/bylocation/:id_user').get(function(req, res) {
 
 //send an event by mail
 router.route('/events/invite/:id_user').post(function(req, res) {
+
   var email=req.body.email;
   //search if the event exist, if not return
   Event.findOne({ _id:req.body.id_event, id_user:req.params.id_user}, function(err, event) {

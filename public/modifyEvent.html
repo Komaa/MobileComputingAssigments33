@@ -22,7 +22,7 @@ $(document).ready(function(){
   var getdata=$.ajax({
     type: "GET",
     url: "/api/events/search",
-    data: "id="+"563bb1699e83468c2d455fb9",
+    data: "id="+id_event,
     dataType : "json",
     success: function(data){
       $("#name").val(data["name"]);
@@ -61,17 +61,19 @@ $(document).ready(function(){
 		 sendData=sendData+"&type="+type;
 		  $.ajax({
 		   type: "PUT",
-			 url: "/api/events",
+			 url: "/api/events/"+id_event,
 			 data: sendData,
-		   success: function(data){
-         alert("Event Modified");
-        if(html=='Event Added')    {
+			 success: function(html){
+				 if(html == 'Event Updated')    {
+				 window.location="calendar.html";
+			 }
+      /*  if(html=='Event Added')    {
           $("#add_err").html("Event Added");
          }
 			else    {
 			$("#add_err").css('display', 'inline', 'important');
 			 $("#add_err").html("<img src='images/alert.png' />Error");
-			}
+		 }*/
 		   },
 		   beforeSend:function()
 		   {
