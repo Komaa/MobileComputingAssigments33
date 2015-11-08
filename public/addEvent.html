@@ -37,8 +37,10 @@ $(document).ready(function(){
 		   type: "POST",
 			 url: "/api/events",
 			 data: sendData,
-		   success: function(data){
-				 alert("Event Added");
+		   success: function(html){
+				 if(html == 'Event Added')    {
+				 window.location="calendar.html";
+			 }
       /*  if(html=='Event Added')    {
           $("#add_err").html("Event Added");
          }

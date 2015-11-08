@@ -10,18 +10,21 @@
 <script>
 //var urlString= "http://130.233.42.94:8080/";
 //var urlString = "http://localhost:8080/";
-
+function get(name){
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+}
 
 $(document).ready(function(){
+	var id_event=get('id_modify');
 	$("#add_err").css('display', 'none', 'important');
 
   var getdata=$.ajax({
     type: "GET",
     url: "/api/events/search",
-    data: "id="+"563e412baa0b73a00bb2dedc",
+    data: "id="+"563bb1699e83468c2d455fb9",
     dataType : "json",
     success: function(data){
-
       $("#name").val(data["name"]);
       $("#description").val(data["description"]);
       $("#start_event").val(data["start_event"]);

@@ -453,11 +453,12 @@ $.fn.zabuto_calendar = function (options) {
 
         function accoda_button(id) {
           var str;
-          str = "<form action=\"demo_form.asp\" method=\"post\">";
-          str += "<input type=\"hidden\" value=\""+id +"\" name=\"id\">";
+          str = "<form action=\"modifyEvent.html\" method=\"get\">";
+          str += "<input type=\"hidden\" value=\""+id +"\" name=\"id_modify\" id=\"id_modify\">";
           str += "<input class=\"btn btn-primary\" type=\"submit\" value=\"Edit\" name=\"action\">";
-          str += "<input class=\"btn btn-danger\" type=\"submit\" value=\"Delete\" name=\"action\">";
           str += "</form>";
+          str += "<input type=\"hidden\" value=\""+id +"\" name=\"id_delete\" id=\"id_delete\">";
+          str += "<input class=\"btn btn-danger\" type=\"submit\" value=\"Delete\" name=\"btn-delete\" id=\"btn-delete\" onclick=\"delete_event()\">";
           return str;
 
 

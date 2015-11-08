@@ -45,7 +45,7 @@ var cordi;
     if (err) {
       return res.send(err);
     }
-    res.send({ message: 'Event Added' });
+    res.send('Event Added');
   });
 });
 

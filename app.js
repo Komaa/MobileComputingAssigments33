@@ -46,8 +46,10 @@ app.use(function (req, res, next) {
       (req.originalUrl ==="/api/events/search/bytype") || (req.originalUrl ==="/api/events/search/bydate") || (req.originalUrl ==="/api/events/search/bylocation")){
         req.originalUrl=req.originalUrl+"/"+id;
         req.params.id = id;
+        console.log(req.originalUrl);
         res.redirect(req.originalUrl);
       }else{
+        console.log(req.originalUrl);
         next();
       }
     }

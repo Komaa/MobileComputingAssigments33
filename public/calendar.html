@@ -8,35 +8,7 @@
 	<link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" type="text/css" href="css/zabuto_calendar.min.css">
 	<link href="css/style.css" rel="stylesheet">
-	<script>
-	var urlString= "http://localhost:8080/";
-	$(document).ready(function(){
-		$("#add_err").css('display', 'none', 'important');
 
-		 function logout(){
-			  $.ajax({
-			   type: "DELETE",
-				 url: urlString+"api/users/logout",
-			   success: function(html){
-				if(html=='true')    {
-				 //$("#add_err").html("right username or password");
-				 window.location="index.html";
-				}
-				else    {
-				$("#add_err").css('display', 'inline', 'important');
-				 $("#add_err").html("Something went wrong with the logout");
-				}
-			   },
-			   beforeSend:function()
-			   {
-				$("#add_err").css('display', 'inline', 'important');
-				$("#add_err").html("Logging out...")
-			   }
-			  });
-				
-			return false;
-		});
-</script>
 
 <style type="text/css" media="screen">
 	html, body{
@@ -166,6 +138,61 @@
 
 
 	</script>
+	<script>
+	var urlString= "http://localhost:8080/";
+	$(document).ready(function(){
+		$("#add_err").css('display', 'none', 'important');
+
+		 function logout(){
+			  $.ajax({
+			   type: "DELETE",
+				 url: urlString+"api/users/logout",
+			   success: function(html){
+				if(html=='true')    {
+				 //$("#add_err").html("right username or password");
+				 window.location="index.html";
+				}
+				else    {
+				$("#add_err").css('display', 'inline', 'important');
+				 $("#add_err").html("Something went wrong with the logout");
+				}
+			   },
+			   beforeSend:function()
+			   {
+				$("#add_err").css('display', 'inline', 'important');
+				$("#add_err").html("Logging out...")
+			   }
+			  });
+
+			return false;
+		}
+		});
+</script>
+
+<script>
+//$(document).ready(function(){
+//  $("#btn-delete").click(function(){
+function delete_event(){
+		var id=$('#id_delete').val();
+		console.log(id);
+    $.ajax({
+     type: "DELETE",
+     url: "/api/events/"+id,
+     success: function(data){
+       alert("Event Deleted");
+			 window.location="calendar.html";
+     },
+     failure: function(){
+       alert("Event NOT Deleted");
+			 window.location="calendar.html";
+     },
+   });
+  return false;
+//  });
+}
+//});
+
+</script>
 
 
 </body>
