@@ -45,10 +45,10 @@
 								 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Import/Export<strong class="caret"></strong></a>
 								<ul class="dropdown-menu">
 									<li>
-										<a href="#">Import GoogleCalendar</a>
+										<a href="http://localhost:8080/api/events/syncronize/from">Import GoogleCalendar</a>
 									</li>
 									<li>
-										<a href="#">Export GoogleCalendar</a>
+										<a href="http://localhost:8080/api/events/syncronize/to">Export GoogleCalendar</a>
 									</li>
 								</ul>
 							</li>
@@ -172,8 +172,8 @@
 <script>
 //$(document).ready(function(){
 //  $("#btn-delete").click(function(){
-function delete_event(){
-		var id=$('#id_delete').val();
+function delete_event(id){
+	//	var id=$('#id_delete').val();
 		console.log(id);
     $.ajax({
      type: "DELETE",

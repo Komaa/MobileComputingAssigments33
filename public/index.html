@@ -44,7 +44,8 @@ $(document).ready(function(){
      data: "username="+user+"&password="+pass,
       success: function(html){
      if(html=='User Added')    {
-      $("#add_err").html("User created");
+			 $("#add_err").html("");
+      alert("User Created");
      }
      else    {
      $("#add_err").css('display', 'inline', 'important');

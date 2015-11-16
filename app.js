@@ -30,12 +30,17 @@ app.use(function (req, res, next) {
     else
       id=req.session.userid;
 
+    if((req.originalUrl ==="/api/events/syncronize/from") || (req.originalUrl ==="/api/events/syncronize/to")){
+      req.originalUrl=req.originalUrl+"/"+id;
+      res.redirect(req.originalUrl);
+    }
+
     if(req.method === "POST"){
         //console.log(req.body);
         if((req.originalUrl ==="/api/events") || (req.originalUrl ==="/api/events/copyevent") || (req.originalUrl ==="/api/events/invite")){
           req.originalUrl=req.originalUrl+"/"+id;
           req.params.id = id;
-          console.log(req.originalUrl);
+          //console.log(req.originalUrl);
           res.redirect(307,req.originalUrl);
         }else{
           next();
@@ -45,18 +50,18 @@ app.use(function (req, res, next) {
       (req.originalUrl ==="/api/events/search/bytype") || (req.originalUrl ==="/api/events/search/bydate") || (req.originalUrl ==="/api/events/search/bylocation")){
         req.originalUrl=req.originalUrl+"/"+id;
         req.params.id = id;
-        console.log(req.originalUrl);
+        //console.log(req.originalUrl);
         res.redirect(req.originalUrl);
       }else if ((((req.originalUrl).indexOf("/api/events/search")) >= 0 ) && (((req.originalUrl).indexOf("/api/events/search/"+id)) < 0 ) ) {
         var urlSplit= req.originalUrl.split("?");
         var newUrl= urlSplit[0]+"/"+id+"?"+urlSplit[1];
         req.originalUrl=newUrl;
         req.params.id = id;
-        console.log(req.originalUrl);
+        //console.log(req.originalUrl);
         res.redirect(req.originalUrl);
 
       }else{
-        console.log(req.originalUrl);
+        //console.log(req.originalUrl);
         next();
       }
     }
@@ -68,7 +73,7 @@ app.use(express.static(__dirname + "/public"));
 
 //Handle 404
 app.get("/*", function(req, res, next) {
-    next("Could not find page");
+    next();
 });
 
 module.exports = app;

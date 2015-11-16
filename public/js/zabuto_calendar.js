@@ -457,8 +457,7 @@ $.fn.zabuto_calendar = function (options) {
           str += "<input type=\"hidden\" value=\""+id +"\" name=\"id_modify\" id=\"id_modify\">";
           str += "<input class=\"btn btn-primary\" type=\"submit\" value=\"Edit\" name=\"action\">";
           str += "</form>";
-          str += "<input type=\"hidden\" value=\""+id +"\" name=\"id_delete\" id=\"id_delete\">";
-          str += "<input class=\"btn btn-danger\" type=\"submit\" value=\"Delete\" name=\"btn-delete\" id=\"btn-delete\" onclick=\"delete_event()\">";
+          str += "<input class=\"btn btn-danger\" type=\"submit\" value=\"Delete\" name=\"btn-delete\" id=\"btn-delete\" onclick=\"delete_event(\'" + id + "\')\">";
           return str;
 
 

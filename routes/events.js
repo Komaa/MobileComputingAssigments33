@@ -4,7 +4,23 @@ var express = require('express');
 var nodemailer = require('nodemailer');
 var extend = require('util')._extend;
 var router = express.Router();
+var moment = require('moment');
+var google = require('googleapis');
 
+var googleConfig = {
+  clientID: '8471764600-uj2quooef01akcf38vtnj3p34kqnq9ts.apps.googleusercontent.com',
+  clientSecret: '70zkutLWfKze_AObS2xogbfb',
+};
+
+var redirectURLimport= 'http://localhost:8080/api/events/auth/import',
+redirectURLexport= 'http://localhost:8080/api/events/auth/export';
+
+
+var calendar = google.calendar('v3'),
+oAuthClientimport = new google.auth.OAuth2(googleConfig.clientID, googleConfig.clientSecret, redirectURLimport),
+authedimport = false,
+oAuthClientexport = new google.auth.OAuth2(googleConfig.clientID, googleConfig.clientSecret, redirectURLexport),
+authedexport = false;
 
 
 //get all the events related to a user
@@ -222,10 +238,139 @@ router.route('/events/invite/:id_user').post(function(req, res) {
 
 //syncronizing to google calendar
 router.route('/events/syncronize/from/:id_user').get(function(req, res) {
+    if (!authedimport) {
+    // Generate an OAuth URL and redirect there
+    var url = oAuthClientimport.generateAuthUrl({
+      access_type: 'offline',
+      scope: 'https://www.googleapis.com/auth/calendar.readonly'
+    });
+    res.redirect(url);
+  } else {
+      // Call google to fetch events for today on our calendar
+      calendar.events.list({
+        calendarId: 'primary',
+        //maxResults: 20,
+        //timeMin: today + '00:00:00.000Z',
+        //timeMax: today + '23:59:59.000Z',
+        singleEvents: true,
+        auth: oAuthClientimport
+      }, function(err, response) {
+        if(err) {
+          console.log('Error fetching events');
+          console.log(err);
+        } else {
+          // Import everything
+          var events = response.items;
+          console.log('Successfully fetched events');
+          for (var i = 0; i < events.length; i++) {
+            var tmpevent = events[i];
+            var start = tmpevent.start.dateTime || tmpevent.start.date;
+            var end = tmpevent.end.dateTime || tmpevent.end.date;
+            var event = new Event({name:tmpevent.summary, start_event:start, end_event:end, description:tmpevent.description, id_user: req.params.id_user, repetition: false});
+            event.save(function(err) {
+              if (err) {
+                console.log(err);
+              }
+            console.log('%s - %s - %s', start, end, tmpevent.summary);
+            });
+          }
+          res.redirect('http://localhost:8080/calendar.html');
+        }
+      });
+  }
+});
+
+//syncronizing to google calendar
+router.route('/events/syncronize/to/:id_user').get(function(req, res) {
+    if (!authedexport) {
+    // Generate an OAuth URL and redirect there
+    var url = oAuthClientexport.generateAuthUrl({
+      access_type: 'offline',
+      scope: 'https://www.googleapis.com/auth/calendar'
+    });
+    res.redirect(url);
+  } else {
+    Event.find({ id_user: req.params.id_user},function(err, events) {
+      if (err) {
+        console.log(err);
+      }
+
+      for (var i = 0; i < events.length; i++) {
+        var tmpevent = events[i];
+        var event = {
+            'summary': tmpevent.name,
+            'description': tmpevent.description,
+            'start': {
+              'dateTime': new Date(tmpevent.start_event).toISOString(),
+              'timeZone': 'Europe/Helsinki',
+            },
+            'end': {
+              'dateTime': new Date(tmpevent.start_event).toISOString(),
+              'timeZone': 'Europe/Helsinki',
+            }
+          };
+        console.log(event);
+        calendar.events.insert({
+          auth: oAuthClientexport,
+          calendarId: 'primary',
+          resource: event,
+        }, function(err, event) {
+          if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            return;
+          }
+          console.log('Event created: %s', event.htmlLink);
+
+        });
+      }
+      res.redirect('http://localhost:8080/calendar.html');
+    });
 
 
+
+
+  }
 });
 
 
+router.route('/events/auth/import').get(function(req, res) {
+    var code = req.param('code');
+    if(code) {
+      // Get an access token based on our OAuth code
+      oAuthClientimport.getToken(code, function(err, tokens) {
+        if (err) {
+          console.log('Error authenticating')
+          console.log(err);
+        } else {
+          console.log('Successfully authenticated');
+          console.log(tokens);
+          // Store our credentials and redirect back to our main page
+          oAuthClientimport.setCredentials(tokens);
+          authedimport = true;
+          res.redirect('http://localhost:8080/api/events/syncronize/from');
+        }
+      });
+    }
+});
+
+router.route('/events/auth/export').get(function(req, res) {
+    var code = req.param('code');
+    if(code) {
+      // Get an access token based on our OAuth code
+      oAuthClientexport.getToken(code, function(err, tokens) {
+        if (err) {
+          console.log('Error authenticating')
+          console.log(err);
+        } else {
+          console.log('Successfully authenticated');
+          console.log(tokens);
+          // Store our credentials and redirect back to our main page
+          oAuthClientexport.setCredentials(tokens);
+          authedexport = true;
+          res.redirect('http://localhost:8080/api/events/syncronize/to');
+        }
+      });
+    }
+});
 
 module.exports = router;
