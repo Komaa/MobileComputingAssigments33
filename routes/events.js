@@ -6,6 +6,7 @@ var extend = require('util')._extend;
 var router = express.Router();
 var moment = require('moment');
 var google = require('googleapis');
+var mongoose = require('mongoose');
 
 var googleConfig = {
   clientID: '8471764600-uj2quooef01akcf38vtnj3p34kqnq9ts.apps.googleusercontent.com',
@@ -266,7 +267,9 @@ router.route('/events/syncronize/from/:id_user').get(function(req, res) {
             var tmpevent = events[i];
             var start = tmpevent.start.dateTime || tmpevent.start.date;
             var end = tmpevent.end.dateTime || tmpevent.end.date;
-            var event = new Event({name:tmpevent.summary, start_event:start, end_event:end, description:tmpevent.description, id_user: req.params.id_user, repetition: false});
+            console.log(tmpevent.id);
+            console.log(tmpevent.id.substring(0,24));
+            var event = new Event({name:tmpevent.summary, start_event:start, end_event:end, description:tmpevent.description, id_user: req.params.id_user, repetition: false, _id: mongoose.Types.ObjectId(tmpevent.id.substring(0,12))});
             event.save(function(err) {
               if (err) {
                 console.log(err);
@@ -300,6 +303,7 @@ router.route('/events/syncronize/to/:id_user').get(function(req, res) {
         var event = {
             'summary': tmpevent.name,
             'description': tmpevent.description,
+            'id': tmpevent._id,
             'start': {
               'dateTime': new Date(tmpevent.start_event).toISOString(),
               'timeZone': 'Europe/Helsinki',
