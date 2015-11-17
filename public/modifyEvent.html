@@ -29,9 +29,19 @@ $(document).ready(function(){
       $("#description").val(data["description"]);
       $("#start_event").val(data["start_event"]);
       $("#end_event").val(data["end_event"]);
-      $("#repetition").val(data["repetition"]);
+      //$("#repetition").val(data["repetition"]);
+			if(data["repetition"]){
+				$("#repetition").prop('checked', true);
+			}else{
+				$("#repetition").prop('checked', false);
+			}
       $("#when_repetition").val(data["when_repetition"]);
-      $("#alert").val(data["alert"]);
+			if(data["alert"]){
+				$("#alert").prop('checked', true);
+			}else{
+				$("#alert").prop('checked', false);
+			}
+
       $("#when_alert").val(data["when_alert"]);
       $("#type").val(data["type"]);
     },
