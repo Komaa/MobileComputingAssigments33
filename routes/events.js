@@ -13,8 +13,8 @@ var googleConfig = {
   clientSecret: '70zkutLWfKze_AObS2xogbfb',
 };
 
-var redirectURLimport= 'http://localhost:8080/api/events/auth/import',
-redirectURLexport= 'http://localhost:8080/api/events/auth/export';
+var redirectURLimport= 'http://130.233.42.94:8080/api/events/auth/import',
+redirectURLexport= 'http://130.233.42.94:8080/api/events/auth/export';
 
 
 var calendar = google.calendar('v3'),
@@ -277,7 +277,7 @@ router.route('/events/syncronize/from/:id_user').get(function(req, res) {
             console.log('%s - %s - %s', start, end, tmpevent.summary);
             });
           }
-          res.redirect('http://localhost:8080/calendar.html');
+          res.redirect('http://130.233.42.94:8080/calendar.html');
         }
       });
   }
@@ -327,7 +327,7 @@ router.route('/events/syncronize/to/:id_user').get(function(req, res) {
 
         });
       }
-      res.redirect('http://localhost:8080/calendar.html');
+      res.redirect('http://130.233.42.94:8080/calendar.html');
     });
 
 
@@ -351,7 +351,7 @@ router.route('/events/auth/import').get(function(req, res) {
           // Store our credentials and redirect back to our main page
           oAuthClientimport.setCredentials(tokens);
           authedimport = true;
-          res.redirect('http://localhost:8080/api/events/syncronize/from');
+          res.redirect('http://130.233.42.94:8080/api/events/syncronize/from');
         }
       });
     }
@@ -371,7 +371,7 @@ router.route('/events/auth/export').get(function(req, res) {
           // Store our credentials and redirect back to our main page
           oAuthClientexport.setCredentials(tokens);
           authedexport = true;
-          res.redirect('http://localhost:8080/api/events/syncronize/to');
+          res.redirect('http://130.233.42.94:8080/api/events/syncronize/to');
         }
       });
     }
