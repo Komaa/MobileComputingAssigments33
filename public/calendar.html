@@ -45,15 +45,15 @@
 								 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Import/Export<strong class="caret"></strong></a>
 								<ul class="dropdown-menu">
 									<li>
-										<a href="http://localhost:8080/api/events/syncronize/from">Import GoogleCalendar</a>
+										<a href="http://130.233.42.94/:8080/api/events/syncronize/from">Import GoogleCalendar</a>
 									</li>
 									<li>
-										<a href="http://localhost:8080/api/events/syncronize/to">Export GoogleCalendar</a>
+										<a href="http://130.233.42.94:8080/api/events/syncronize/to">Export GoogleCalendar</a>
 									</li>
 								</ul>
 							</li>
 							<li>
-								<a href="http://localhost:8080/" onclick="logout();">Logout</a>
+								<a href="http://130.233.42.94:8080/" onclick="logout();">Logout</a>
 							</li>
 						</ul>
 					</div>
@@ -84,7 +84,7 @@
 
 	<!-- initialize the calendar on ready -->
 	<script type="application/javascript">
-	var urlString= "http://localhost:8080/";
+	var urlString= "http://130.233.42.94:8080/";
 	var eventd = [
     {"date":"2015-11-01","badge":false,"title":"Example 1"},
 		{
@@ -139,7 +139,7 @@
 
 	</script>
 	<script>
-	var urlString= "http://localhost:8080/";
+	var urlString= "http://130.233.42.94:8080/";
 	$(document).ready(function(){
 		$("#add_err").css('display', 'none', 'important');
 
