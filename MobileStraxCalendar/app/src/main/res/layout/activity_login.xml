@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.javacodegeeks.android.loginapp.MainActivity" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Strax Calendar"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="97dp"
+        android:text="Username:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/textView1"
+        android:layout_toLeftOf="@+id/loginBtn"
+        android:layout_toStartOf="@+id/loginBtn" />
+
+    <EditText
+        android:id="@+id/usernameET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_marginLeft="35dp"
+        android:layout_toRightOf="@+id/textView2"
+        android:hint="username"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_alignEnd="@+id/textView1">
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="40dp"
+        android:text="Password:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/passwordET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView3"
+        android:hint="password"
+        android:inputType="textPassword"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_alignEnd="@+id/textView1"
+        android:layout_alignLeft="@+id/usernameET"
+        android:layout_alignStart="@+id/usernameET" />
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="authenticateLogin"
+        android:text="Login"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/registrationBtn"
+        android:layout_alignStart="@+id/registrationBtn" />
+
+    <Button
+        android:id="@+id/registrationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:onClick="registrate"
+        android:text="Register"
+        android:layout_below="@+id/loginBtn"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Title"
+        android:id="@+id/logintext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20dp"
+        android:layout_above="@+id/usernameET"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
