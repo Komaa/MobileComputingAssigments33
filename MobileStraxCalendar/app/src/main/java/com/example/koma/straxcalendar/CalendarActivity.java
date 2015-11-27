@@ -10,49 +10,75 @@ package com.example.koma.straxcalendar;
     import android.widget.Toast;
     import android.app.Activity;
 
-    public class CalendarActivity extends Activity {
-        CalendarView calendar;
+    import java.text.DateFormat;
+    import java.text.SimpleDateFormat;
+    import java.util.Date;
+    import java.util.HashSet;
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+    import android.support.v7.app.ActionBarActivity;
+    import android.os.Bundle;
+    import android.view.Menu;
+    import android.view.MenuItem;
+    import android.widget.Toast;
 
-            //sets the main layout of the activity
-            setContentView(R.layout.activity_calendar);
+    import java.text.DateFormat;
+    import java.text.SimpleDateFormat;
+    import java.util.Date;
+    import java.util.HashSet;
 
-            //initializes the calendarview
-            initializeCalendar();
-        }
 
-        public void initializeCalendar() {
-            calendar = (CalendarView) findViewById(R.id.calendar);
+public class CalendarActivity extends ActionBarActivity
+{
 
-            // sets whether to show the week number.
-            calendar.setShowWeekNumber(false);
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_calendar);
 
-            // sets the first day of week according to Calendar.
-            // here we set Monday as the first day of the Calendar
-            calendar.setFirstDayOfWeek(2);
+        HashSet<Date> events = new HashSet<>();
+        events.add(new Date());
 
-            //The background color for the selected week.
-            calendar.setSelectedWeekBackgroundColor(getResources().getColor(R.color.green));
+        MyCalendarView cv = ((MyCalendarView)findViewById(R.id.calendar_view));
 
-            //sets the color for the dates of an unfocused month.
-            calendar.setUnfocusedMonthDateColor(getResources().getColor(R.color.transparent));
+        cv.updateCalendar(events);
+        cv.updateCalendar(events);
 
-            //sets the color for the separator line between weeks.
-            calendar.setWeekSeparatorLineColor(getResources().getColor(R.color.transparent));
-
-            //sets the color for the vertical bar shown at the beginning and at the end of the selected date.
-            calendar.setSelectedDateVerticalBar(R.color.darkgreen);
-
-            //sets the listener to be notified upon selected date change.
-            calendar.setOnDateChangeListener(new OnDateChangeListener() {
-                //show the selected date as a toast
-                @Override
-                public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
-                    Toast.makeText(getApplicationContext(), day + "/" + month + "/" + year, Toast.LENGTH_LONG).show();
-                }
-            });
-        }
+        // assign event handler
+        cv.setEventHandler(new MyCalendarView.EventHandler()
+        {
+            @Override
+            public void onDayLongPress(Date date)
+            {
+                // show returned day
+                DateFormat df = SimpleDateFormat.getDateInstance();
+                Toast.makeText(CalendarActivity.this, df.format(date), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_calendar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings)
+        {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}
