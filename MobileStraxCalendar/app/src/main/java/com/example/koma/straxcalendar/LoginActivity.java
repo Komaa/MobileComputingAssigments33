@@ -43,7 +43,7 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;
