@@ -47,8 +47,18 @@ public class LoginActivity extends ActionBarActivity {
 
     private EditText username;
     private EditText password;
-    private static String apiURL = "http://130.233.42.94:8080/api/";
+
+    private EditText regusername;
+    private EditText regpassword;
+
+    //test on server
+    //private static String apiURL = "http://130.233.42.94:8080/api/";
+
+    //testing locally
+    private static String apiURL = "http://192.168.0.101:8080/api/";
+
     private Button login;
+    private Button register;
     private TextView loginLockedTV;
     private TextView attemptsLeftTV;
     private TextView numberOfRemainingLoginAttemptsTV;
@@ -64,7 +74,10 @@ public class LoginActivity extends ActionBarActivity {
     private void setupVariables() {
         username = (EditText) findViewById(R.id.usernameET);
         password = (EditText) findViewById(R.id.passwordET);
+        regusername = (EditText) findViewById(R.id.newUser);
+        regpassword = (EditText) findViewById(R.id.newpass);
         login = (Button) findViewById(R.id.loginBtn);
+        register = (Button) findViewById(R.id.registrationBtn);
     }
 
     public void authenticateLogin(View view) {
@@ -75,12 +88,29 @@ public class LoginActivity extends ActionBarActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i("boh", apiURL+ " :"+user+" "+pass);
             new DownloadWebpageTask().execute(new String[]{apiURL+ "users/login", user, pass});
         } else {
             Toast.makeText(getApplicationContext(), "No internet connection!",
                     Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void registerUser(View view) {
+        String user = regusername.getText().toString();
+        String pass = regpassword.getText().toString();
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i("boh", apiURL+ " :"+user+" "+pass);
+            new DownloadWebpageTask().execute(new String[]{apiURL+ "users", user, pass});
+        } else {
+            Toast.makeText(getApplicationContext(), "No internet connection!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
@@ -104,12 +134,18 @@ public class LoginActivity extends ActionBarActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            if(result.equals("true")){
+            Log.i("boh", result);
+            if (result.equals("true")) {
                 super.onPostExecute(result);
                 Intent intent = new Intent(LoginActivity.this, CalendarActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
+            }if(result.equals("User Added")){
+                Log.i("boh", "user add");
+                Toast.makeText(getApplicationContext(), "New user added",
+                        Toast.LENGTH_SHORT).show();
             }else{
+                Log.i("boh", "U/P incorrect");
                 Toast.makeText(getApplicationContext(), "Username &/or Pass not correct",
                         Toast.LENGTH_SHORT).show();
             }
@@ -129,6 +165,7 @@ public class LoginActivity extends ActionBarActivity {
         try {
             Log.i("boh", "here");
             URL url = new URL(myurl);
+            Log.i("boh", ""+url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
