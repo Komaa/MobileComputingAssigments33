@@ -5,6 +5,7 @@ package com.example.koma.straxcalendar;
  */
 
     import android.os.Bundle;
+    import android.support.v7.app.AppCompatActivity;
     import android.widget.CalendarView;
     import android.widget.CalendarView.OnDateChangeListener;
     import android.widget.Toast;
@@ -29,7 +30,7 @@ package com.example.koma.straxcalendar;
     import java.util.HashSet;
 
 
-public class CalendarActivity extends ActionBarActivity
+public class CalendarActivity extends AppCompatActivity
 {
 
     @Override

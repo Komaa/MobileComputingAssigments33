@@ -38,9 +38,10 @@
         android:id="@+id/name"
         android:layout_alignRight="@+id/descr"
         android:layout_alignEnd="@+id/descr"
-        android:layout_toEndOf="@+id/textView6"
+        android:inputType="text"
         android:layout_alignBottom="@+id/textView6"
-        android:inputType="text" />
+        android:layout_alignLeft="@+id/descr"
+        android:layout_alignStart="@+id/descr" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -125,7 +126,7 @@
         android:id="@+id/alert"
         android:checked="false"
         android:onClick="onAlertClicked"
-        android:layout_above="@+id/textView10"
+        android:layout_above="@+id/whenalert"
         android:layout_centerHorizontal="true" />
 
     <TextView
