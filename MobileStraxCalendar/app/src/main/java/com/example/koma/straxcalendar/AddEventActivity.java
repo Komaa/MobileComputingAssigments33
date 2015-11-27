@@ -2,54 +2,50 @@ package com.example.koma.straxcalendar;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class LoginActivity extends ActionBarActivity {
+public class AddEventActivity extends AppCompatActivity {
 
-    private EditText username;
-    private EditText password;
+    private EditText name;
+    private EditText description;
+    private EditText start_date;
+    private EditText end_date;
+    private CheckBox alert;
+    private boolean isAlert;
+    private EditText when_alert;
+    private Button addEvent;
 
-    private EditText regusername;
-    private EditText regpassword;
+    //harcoded user_id for testing
+    private String user_id = "563b3c7a91685d2e0249b102";
 
     //test on server
     //private static String apiURL = "http://130.233.42.94:8080/api/";
@@ -57,60 +53,46 @@ public class LoginActivity extends ActionBarActivity {
     //testing locally
     private static String apiURL = "http://192.168.0.101:8080/api/";
 
-    private Button login;
-    private Button register;
-    private TextView loginLockedTV;
-    private TextView attemptsLeftTV;
-    private TextView numberOfRemainingLoginAttemptsTV;
-    int numberOfRemainingLoginAttempts = 3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_add_event);
         setupVariables();
     }
 
     private void setupVariables() {
-        username = (EditText) findViewById(R.id.usernameET);
-        password = (EditText) findViewById(R.id.passwordET);
-        regusername = (EditText) findViewById(R.id.newUser);
-        regpassword = (EditText) findViewById(R.id.newpass);
-        login = (Button) findViewById(R.id.loginBtn);
-        register = (Button) findViewById(R.id.registrationBtn);
+        name = (EditText) findViewById(R.id.name);
+        description = (EditText) findViewById(R.id.descr);
+        start_date = (EditText) findViewById(R.id.strtdate);
+        end_date = (EditText) findViewById(R.id.enddate);
+        alert = (CheckBox) findViewById(R.id.alert);
+        when_alert = (EditText) findViewById(R.id.whenalert);
+        addEvent = (Button) findViewById(R.id.add);
+        isAlert=false;
+
     }
 
-    public void authenticateLogin(View view) {
-        String user = username.getText().toString();
-        String pass = password.getText().toString();
-
+    public void addNewEvent(View view) {
+        String eventname = name.getText().toString();
+        String eventdescr = description.getText().toString();
+        String start = start_date.getText().toString();
+        String end = end_date.getText().toString();
+        String alertDate = when_alert.getText().toString();
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            Log.i("boh", apiURL+ " :"+user+" "+pass);
-            new DownloadWebpageTask().execute(new String[]{apiURL+ "users/login", user, pass});
+            Log.i("boh", apiURL);
+            new DownloadWebpageTask().execute(new String[]{apiURL+ "events/"+user_id, eventname, eventdescr, start, end, ""+isAlert, alertDate });
         } else {
             Toast.makeText(getApplicationContext(), "No internet connection!",
                     Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    public void registerUser(View view) {
-        String user = regusername.getText().toString();
-        String pass = regpassword.getText().toString();
+    public void onAlertClicked(View view){
+        isAlert =  alert.isChecked();
 
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            Log.i("boh", apiURL+ " :"+user+" "+pass);
-            new DownloadWebpageTask().execute(new String[]{apiURL+ "users", user, pass});
-        } else {
-            Toast.makeText(getApplicationContext(), "No internet connection!",
-                    Toast.LENGTH_SHORT).show();
-        }
     }
 
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
@@ -122,8 +104,12 @@ public class LoginActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(String... urls) {
             HashMap<String, String> inputmap= new HashMap<String, String>();
-            inputmap.put("username", urls[1]);
-            inputmap.put("password", urls[2]);
+            inputmap.put("name", urls[1]);
+            inputmap.put("description", urls[2]);
+            inputmap.put("start_event", urls[3]);
+            inputmap.put("end_event", urls[4]);
+            inputmap.put("alert", urls[5]);
+            inputmap.put("when_alert", urls[6]);
             // params comes from the execute() call: params[0] is the url.
             try {
                 return postcall(urls[0], inputmap);
@@ -135,18 +121,18 @@ public class LoginActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.i("boh", result);
-            if (result.equals("true")) {
+            if(result.equals("Event Added")){
+                Log.i("boh", "event added");
+                Toast.makeText(getApplicationContext(), "New Event Added",
+                        Toast.LENGTH_SHORT).show();
                 super.onPostExecute(result);
-                Intent intent = new Intent(LoginActivity.this, CalendarActivity.class);
+                Intent intent = new Intent(AddEventActivity.this, CalendarActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
-            }if(result.equals("User Added")){
-                Log.i("boh", "user add");
-                Toast.makeText(getApplicationContext(), "New user added",
-                        Toast.LENGTH_SHORT).show();
+
             }else{
-                Log.i("boh", "U/P incorrect");
-                Toast.makeText(getApplicationContext(), "Username &/or Pass not correct",
+                Log.i("boh", "Cannot add event");
+                Toast.makeText(getApplicationContext(), "Error adding event",
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -200,7 +186,7 @@ public class LoginActivity extends ActionBarActivity {
         return response;
     }
 
-    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for(Map.Entry<String, String> entry : params.entrySet()){

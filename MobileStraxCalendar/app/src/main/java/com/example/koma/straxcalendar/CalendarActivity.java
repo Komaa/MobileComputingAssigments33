@@ -9,7 +9,9 @@ package com.example.koma.straxcalendar;
     import android.widget.CalendarView.OnDateChangeListener;
     import android.widget.Toast;
     import android.app.Activity;
-
+    import android.content.Intent;
+    import android.view.View;
+    import android.util.Log;
     import java.text.DateFormat;
     import java.text.SimpleDateFormat;
     import java.util.Date;
@@ -63,6 +65,13 @@ public class CalendarActivity extends ActionBarActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_calendar, menu);
         return true;
+    }
+
+    public void addNewEventPage(View view) {
+        Log.i("boh", "addNewEvenPaget method");
+        Intent intent = new Intent(this, AddEventActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
