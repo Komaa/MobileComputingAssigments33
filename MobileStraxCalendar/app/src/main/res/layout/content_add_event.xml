@@ -125,7 +125,7 @@
         android:id="@+id/alert"
         android:checked="false"
         android:onClick="onAlertClicked"
-        android:layout_above="@+id/whenalert"
+        android:layout_above="@+id/textView10"
         android:layout_centerHorizontal="true" />
 
     <TextView
