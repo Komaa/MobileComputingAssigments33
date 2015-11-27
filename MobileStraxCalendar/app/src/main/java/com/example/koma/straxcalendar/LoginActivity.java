@@ -140,7 +140,7 @@ public class LoginActivity extends ActionBarActivity {
                 Intent intent = new Intent(LoginActivity.this, CalendarActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
-            }if(result.equals("User Added")){
+            }else if(result.equals("User Added")){
                 Log.i("boh", "user add");
                 Toast.makeText(getApplicationContext(), "New user added",
                         Toast.LENGTH_SHORT).show();
