@@ -209,7 +209,7 @@ public class CalendarActivity extends AppCompatActivity
 
 //call deleteEvent(View view) on button click
     public void deleteEvent(View view){
-        String event_id= "5659ab57673b260b031f93b7";//hardcoded for now.
+        String event_id= "5658a3e2c1b0e13e09565cd0";//hardcoded for now.
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -236,6 +236,21 @@ public class CalendarActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String result) {
             Log.i("boh :onPostExecute", result);
+
+            if (result.contains("Event successfully deleted")){
+                Log.i("boh", "event deleted");
+                Toast.makeText(getApplicationContext(), "Event successfully deleted",
+                        Toast.LENGTH_SHORT).show();
+                super.onPostExecute(result);
+               // Intent intent = new Intent(AddEventActivity.this, CalendarActivity.class);
+             //   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               // getApplicationContext().startActivity(intent);
+
+            }else{
+                Log.i("boh", "Cannot delete event");
+                Toast.makeText(getApplicationContext(), "Cannot delete event",
+                        Toast.LENGTH_SHORT).show();
+            }
 
 
 
@@ -293,5 +308,5 @@ public class CalendarActivity extends AppCompatActivity
 
     //Test delete End (move everything to appropriate activity)
 //...........................................................................
-    
+
 }
