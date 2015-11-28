@@ -5,6 +5,7 @@ package com.example.koma.straxcalendar;
  */
 
     import android.content.Context;
+    import android.content.SharedPreferences;
     import android.net.ConnectivityManager;
     import android.net.NetworkInfo;
     import android.os.AsyncTask;
@@ -65,7 +66,7 @@ public class CalendarActivity extends AppCompatActivity
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.0.101:8080/api/";
+    private static String apiURL = "http://192.168.43.30:8080/api/";
 
     private static HashSet<Date> events = new HashSet<>();
 
@@ -74,23 +75,14 @@ public class CalendarActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        new Getevents().execute(new String[]{apiURL + "events"});
+        SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
 
-        MyCalendarView cv = ((MyCalendarView)findViewById(R.id.calendar_view));
+        //System.out.println(apiURL + "events/" + sharedpreferences.getString("id","").replace("\"", ""));
+        new Getevents().execute(new String[]{apiURL + "events/" + sharedpreferences.getString("id", "").replace("\"", "")});
 
-        cv.updateCalendar(events);
 
-        // assign event handler
-        cv.setEventHandler(new MyCalendarView.EventHandler()
-        {
-            @Override
-            public void onDayLongPress(Date date)
-            {
-                // show returned day
-                DateFormat df = SimpleDateFormat.getDateInstance();
-                Toast.makeText(CalendarActivity.this, df.format(date), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+
     }
 
         private class Getevents extends AsyncTask<String, Void, String> {
@@ -117,10 +109,24 @@ public class CalendarActivity extends AppCompatActivity
 
                     }
 
+                    MyCalendarView cv = ((MyCalendarView)findViewById(R.id.calendar_view));
+
+                    cv.updateCalendar(events);
+                    // assign event handler
+                    cv.setEventHandler(new MyCalendarView.EventHandler() {
+                        @Override
+                        public void onDayLongPress(Date date) {
+                            // show returned day
+                            Intent intent = new Intent(CalendarActivity.this, DailyEventsActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getApplicationContext().startActivity(intent);
+                        }
+
+
+                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
 
 
             }
@@ -145,7 +151,7 @@ public class CalendarActivity extends AppCompatActivity
             // Starts the query
             conn.connect();
             int response = conn.getResponseCode();
-            Log.d("sperem", "The response is: " + response);
+           // Log.d("sperem", "The response is: " + response);
             is = conn.getInputStream();
 
             // Convert the InputStream into a string

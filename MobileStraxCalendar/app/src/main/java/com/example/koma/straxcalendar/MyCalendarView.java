@@ -52,7 +52,7 @@ public class MyCalendarView extends LinearLayout
     private ImageView btnNext;
     private TextView txtDate;
     private GridView grid;
-
+    HashSet<Date> finalevent= new HashSet<Date>();
     // seasons' rainbow
     int[] rainbow = new int[] {
             R.color.summer,
@@ -126,24 +126,20 @@ public class MyCalendarView extends LinearLayout
     private void assignClickHandlers()
     {
         // add one month and refresh UI
-        btnNext.setOnClickListener(new OnClickListener()
-        {
+        btnNext.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 currentDate.add(Calendar.MONTH, 1);
-                updateCalendar();
+                updateCalendar(finalevent);
             }
         });
 
         // subtract one month and refresh UI
-        btnPrev.setOnClickListener(new OnClickListener()
-        {
+        btnPrev.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 currentDate.add(Calendar.MONTH, -1);
-                updateCalendar();
+                updateCalendar(finalevent);
             }
         });
 
@@ -162,6 +158,15 @@ public class MyCalendarView extends LinearLayout
                 return true;
             }
         });
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                eventHandler.onDayLongPress((Date)parent.getItemAtPosition(position));
+            }
+        });
+
     }
 
     /**
@@ -177,6 +182,7 @@ public class MyCalendarView extends LinearLayout
      */
     public void updateCalendar(HashSet<Date> events)
     {
+        finalevent=events;
         ArrayList<Date> cells = new ArrayList<>();
         Calendar calendar = (Calendar)currentDate.clone();
 
@@ -252,7 +258,7 @@ public class MyCalendarView extends LinearLayout
                             eventDate.getYear() == year)
                     {
                         // mark this day for event
-                        view.setBackgroundResource(R.drawable.reminder);
+                        view.setBackgroundResource(R.color.green);
                         break;
                     }
                 }

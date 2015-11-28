@@ -2,6 +2,7 @@ package com.example.koma.straxcalendar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -47,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;
-
+    SharedPreferences sharedpreferences;
     private EditText regusername;
     private EditText regpassword;
 
@@ -56,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.0.101:8080/api/";
+    private static String apiURL = "http://192.168.43.30:8080/api/";
 
     private Button login;
     private Button register;
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
         setupVariables();
     }
 
@@ -135,20 +137,26 @@ public class LoginActivity extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+            super.onPostExecute(result);
             Log.i("boh", result);
-            if (result.equals("true")) {
-                super.onPostExecute(result);
-                Intent intent = new Intent(LoginActivity.this, CalendarActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(intent);
+            if (result.equals("false")) {
+                Log.i("boh", "U/P incorrect");
+                Toast.makeText(getApplicationContext(), "Username &/or Pass not correct",
+                        Toast.LENGTH_SHORT).show();
+
+
             }else if(result.equals("User Added")){
                 Log.i("boh", "user add");
                 Toast.makeText(getApplicationContext(), "New user added",
                         Toast.LENGTH_SHORT).show();
             }else{
-                Log.i("boh", "U/P incorrect");
-                Toast.makeText(getApplicationContext(), "Username &/or Pass not correct",
-                        Toast.LENGTH_SHORT).show();
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("id", result);
+                editor.commit();
+                Intent intent = new Intent(LoginActivity.this, CalendarActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+
             }
 
         }

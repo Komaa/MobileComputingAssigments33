@@ -82,7 +82,8 @@ router.route('/users/login').post(function(req, res) {
     //compare if the encrypted password on the DB is the same as the one insered
     if((user!=null) && bcrypt.compareSync(req.body.password, user.password)){
       req.session.userid=user._id;
-      res.send('true');
+      console.log(req.session.userid);
+      res.send(user._id);
     }else {
       res.send('false');
     }
