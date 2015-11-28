@@ -55,8 +55,15 @@ package com.example.koma.straxcalendar;
 public class CalendarActivity extends AppCompatActivity
 {
 
-    private static String apiURL = "http://192.168.43.30:8080/api/";
+    //test on server
+    //private static String apiURL = "http://130.233.42.94:8080/api/";
+
+    //testing locally
+    //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
+    private static String apiURL = "http://192.168.0.101:8080/api/";
+
     private static HashSet<Date> events = new HashSet<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -170,7 +177,7 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     public void addNewEventPage(View view) {
-        Log.i("boh", "addNewEvenPaget method");
+        Log.i("boh", "addNewEvenPage method");
         Intent intent = new Intent(this, AddEventActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

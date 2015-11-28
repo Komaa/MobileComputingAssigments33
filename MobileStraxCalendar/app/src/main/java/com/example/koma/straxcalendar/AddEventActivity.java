@@ -33,6 +33,7 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
+
 public class AddEventActivity extends AppCompatActivity {
 
     private EditText name;
@@ -51,6 +52,7 @@ public class AddEventActivity extends AppCompatActivity {
     //private static String apiURL = "http://130.233.42.94:8080/api/";
 
     //testing locally
+    //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
     private static String apiURL = "http://192.168.0.101:8080/api/";
 
     @Override
