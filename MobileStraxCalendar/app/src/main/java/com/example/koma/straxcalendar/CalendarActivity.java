@@ -4,6 +4,9 @@ package com.example.koma.straxcalendar;
  * Created by Koma on 25/11/15.
  */
 
+    import android.content.Context;
+    import android.net.ConnectivityManager;
+    import android.net.NetworkInfo;
     import android.os.AsyncTask;
     import android.os.Bundle;
     import android.support.v7.app.AppCompatActivity;
@@ -26,6 +29,7 @@ package com.example.koma.straxcalendar;
     import java.io.UnsupportedEncodingException;
     import java.net.HttpURLConnection;
     import java.net.URL;
+    import java.net.URLEncoder;
     import java.text.DateFormat;
     import java.text.SimpleDateFormat;
     import java.util.Date;
@@ -48,6 +52,7 @@ package com.example.koma.straxcalendar;
     import java.util.Date;
     import java.util.HashSet;
     import java.util.Iterator;
+    import java.util.Map;
 
     import javax.net.ssl.HttpsURLConnection;
 
@@ -199,4 +204,94 @@ public class CalendarActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+//...........................................................................
+// Test delete Start (move everything to appropriate activity)
+
+//call deleteEvent(View view) on button click
+    public void deleteEvent(View view){
+        String event_id= "5659ab57673b260b031f93b7";//hardcoded for now.
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i("boh", apiURL);
+            new DeleteEvents().execute(apiURL+"events/"+event_id);
+        } else {
+            Toast.makeText(getApplicationContext(), "No internet connection!",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private class DeleteEvents extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+               return delete(urls[0]);
+            } catch (IOException e) {
+                return "Unable to retrieve the web page.";
+            }
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.i("boh :onPostExecute", result);
+
+
+
+        }
+    }
+
+    // Given a URL, establishes an HttpUrlConnection and retrieves
+    // the web page content as a InputStream, which it returns as
+    // a string.
+    private String delete(String myurl) throws IOException {
+        int len = 500;
+        String response = "";
+        try {
+            Log.i("boh", "here");
+            URL url = new URL(myurl);
+            Log.i("boh", ""+url);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("DELETE");
+            //conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.connect();
+            //OutputStream os = conn.getOutputStream();
+            //BufferedWriter writer = new BufferedWriter(
+                  //  new OutputStreamWriter(os, "UTF-8"));
+           // writer.write(getPostDataString());
+
+          //  writer.flush();
+           // writer.close();
+           // os.close();
+            int responseCode=conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                Log.i("boh", "response code ok");
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    response+=line;
+                }
+            }
+            else {
+                response="";
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
+
+
+
+    //Test delete End (move everything to appropriate activity)
+//...........................................................................
+    
 }

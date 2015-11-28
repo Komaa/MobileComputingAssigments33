@@ -21,6 +21,24 @@
         android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar"
         android:popupTheme="@android:style/ThemeOverlay.Material.Light" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Event"
+        android:id="@+id/addevent"
+        android:layout_gravity="right"
+        android:onClick="addNewEventPage" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestDelete"
+        android:id="@+id/delEvent"
+        android:onClick="deleteEvent"
+        android:layout_gravity="center_horizontal" />
+
     <com.example.koma.straxcalendar.MyCalendarView
         xmlns:calendarNS="http://schemas.android.com/apk/res/com.example.koma.straxcalendar"
         android:id="@+id/calendar_view"
