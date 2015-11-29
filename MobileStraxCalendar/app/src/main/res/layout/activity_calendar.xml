@@ -32,7 +32,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="50dp"
             android:layout_alignRight="@+id/textView11"
-            android:id="@+id/button2" />
+            android:id="@+id/button2"
+            android:onClick="logoutApp" />
     </LinearLayout>
 
     <LinearLayout

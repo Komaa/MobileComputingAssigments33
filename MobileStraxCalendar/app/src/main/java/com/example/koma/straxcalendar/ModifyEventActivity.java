@@ -17,9 +17,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.*;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -80,7 +83,16 @@ public class ModifyEventActivity extends AppCompatActivity {
 
     //call to get the event details to modify
     public void getEvent(){
-
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i("boh:getEvent()", apiURL);
+            new FetchEvent().execute(new String[]{apiURL+ "events/search/"+user_id+"?id="+event_id});
+        } else {
+            Toast.makeText(getApplicationContext(), "No internet connection!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     //call when update button is pressed to modify event
@@ -97,7 +109,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             Log.i("boh", apiURL);
-            new DownloadWebpageTask().execute(new String[]{apiURL+ "events/"+event_id, eventname, eventdescr, start, end, ""+isAlert, alertDate });
+            new ModifyEvent().execute(new String[]{apiURL+ "events/"+event_id, eventname, eventdescr, start, end, ""+isAlert, alertDate });
         } else {
             Toast.makeText(getApplicationContext(), "No internet connection!",
                     Toast.LENGTH_SHORT).show();
@@ -109,7 +121,7 @@ public class ModifyEventActivity extends AppCompatActivity {
 
     }
 
-    private class GetEvent extends AsyncTask<String, Void, String> {
+    private class FetchEvent extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -122,15 +134,66 @@ public class ModifyEventActivity extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.i("boh:onPostExecute()", result);
+            Log.i("boh:onPostExecute() ", "FetchEvent: "+result);
+            try {
+                JSONObject obj = new JSONObject(result);
+                String eventName = obj.getString("name");
+                String eventDescription = obj.getString("description");
+                String start_event = obj.getString("start_event");
+                String end_event = obj.getString("end_event");
+                Boolean eventAlert = obj.getBoolean("alert");
+                String alertWhen = obj.getString("when_alert");
+
+                name.setText(eventName);
+                description.setText(eventDescription);
+                start_date.setText(start_event);
+                end_date.setText(end_event);
+                alert.setChecked(eventAlert);
+                when_alert.setText(alertWhen);
+            }catch(Exception e){
+
+            }
+
         }
     }
 
     private String getcall(String myurl) throws IOException {
-        int len = 500;
-        String response = "";
+        InputStream is = null;
+        // Only display the first 500 characters of the retrieved
+        // web page content.
 
-        return response;
+        Log.i("boh:getcall() ", myurl);
+        try {
+            URL url = new URL(myurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+            // Log.d("sperem", "The response is: " + response);
+            is = conn.getInputStream();
+
+            // Convert the InputStream into a string
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            StringBuilder out = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                out.append(line);
+            }
+
+            String contentAsString =out.toString();
+            return contentAsString;
+
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
     }
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
     // URL string and uses it to create an HttpUrlConnection. Once the connection
@@ -239,4 +302,6 @@ public class ModifyEventActivity extends AppCompatActivity {
 
         return result.toString();
     }
+
+
 }

@@ -194,6 +194,15 @@ public class CalendarActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void logoutApp(View view){
+        //for now testing modify event here (remove later)
+        Log.i("boh", "ModifyEventPage method");
+        Intent intent = new Intent(this, ModifyEventActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
