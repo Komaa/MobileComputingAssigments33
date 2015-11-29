@@ -66,9 +66,10 @@ public class CalendarActivity extends AppCompatActivity
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.0.101:8080/api/";
+    private static String apiURL = "http://192.168.43.30:8080/api/";
 
-    private static HashSet<Date> events = new HashSet<>();
+    private static HashSet<Date> date_events = new HashSet<>();
+    public static HashSet<JSONObject> events = new HashSet<JSONObject>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -105,13 +106,13 @@ public class CalendarActivity extends AppCompatActivity
 
                     for(int ii=0; ii < jArray.length(); ii++) {
                         //System.out.println(jArray.getString(ii));
-                        events.add(new DateTime(new JSONObject(jArray.getString(ii)).getString("start_event")).toDate());
-
+                        date_events.add(new DateTime(new JSONObject(jArray.getString(ii)).getString("start_event")).toDate());
+                        events.add(new JSONObject(jArray.getString(ii)));
                     }
 
                     MyCalendarView cv = ((MyCalendarView)findViewById(R.id.calendar_view));
 
-                    cv.updateCalendar(events);
+                    cv.updateCalendar(date_events);
                     // assign event handler
                     cv.setEventHandler(new MyCalendarView.EventHandler() {
                         @Override
