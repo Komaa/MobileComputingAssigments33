@@ -12,6 +12,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,17 +70,32 @@ public class DailyEventsActivity extends Activity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            System.out.println("qui");
+
             LayoutInflater inflater = getLayoutInflater();
             View row;
             row = inflater.inflate(R.layout.events_display, parent, false);
-            TextView name, description;
+            TextView name, description, start_event, end_event,repetition_event,when_repetition_event,
+                    alert_event, when_alert_event, type_event;
             name = (TextView) row.findViewById(R.id.text_name_event);
             description = (TextView) row.findViewById(R.id.text_description_event);
+            start_event = (TextView) row.findViewById(R.id.text_start_event);
+            end_event = (TextView) row.findViewById(R.id.text_end_event);
+            repetition_event= (TextView) row.findViewById(R.id.text_repetition_event);
+            when_repetition_event= (TextView) row.findViewById(R.id.text_when_repetition_event);
+            alert_event = (TextView) row.findViewById(R.id.text_alert_event);
+            when_alert_event = (TextView) row.findViewById(R.id.text_when_alert_event);
+            type_event= (TextView) row.findViewById(R.id.text_type_event);
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
             try {
                 name.setText(events_adapter[position].getString("name"));
                 description.setText(events_adapter[position].getString("description"));
-                System.out.println(events_adapter[position].getString("description"));
+                start_event.setText(dtf.print(new DateTime(events_adapter[position].getString("start_event"))));
+                end_event.setText(dtf.print(new DateTime(events_adapter[position].getString("end_event"))));
+                repetition_event.setText(events_adapter[position].getString("repetition"));
+                when_repetition_event.setText(dtf.print(new DateTime(events_adapter[position].getString("when_repetition"))));
+                when_alert_event.setText(events_adapter[position].getString("when_alert"));
+                alert_event.setText(events_adapter[position].getString("alert"));
+                type_event.setText(events_adapter[position].getString("type"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
