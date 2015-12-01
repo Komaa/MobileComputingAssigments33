@@ -2,6 +2,7 @@ package com.example.koma.straxcalendar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -46,7 +47,7 @@ public class AddEventActivity extends AppCompatActivity {
     private Button addEvent;
 
     //harcoded user_id for testing
-    private String user_id = "563b3c7a91685d2e0249b102";
+    private String user_id;
 
     //test on server
     //private static String apiURL = "http://130.233.42.94:8080/api/";
@@ -63,6 +64,8 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     private void setupVariables() {
+        SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
+        user_id = sharedpreferences.getString("id", "").replace("\"", "");
         name = (EditText) findViewById(R.id.name);
         description = (EditText) findViewById(R.id.descr);
         start_date = (EditText) findViewById(R.id.strtdate);
