@@ -66,6 +66,7 @@ public class AddEventActivity extends AppCompatActivity {
     private void setupVariables() {
         SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
         user_id = sharedpreferences.getString("id", "").replace("\"", "");
+        Log.i("boh", "Add event "+user_id);
         name = (EditText) findViewById(R.id.name);
         description = (EditText) findViewById(R.id.descr);
         start_date = (EditText) findViewById(R.id.strtdate);

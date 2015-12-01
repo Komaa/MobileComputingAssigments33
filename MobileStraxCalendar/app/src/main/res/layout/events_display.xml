@@ -216,7 +216,7 @@
             android:id="@+id/button_edit"
 
             android:layout_weight="1"
-            />
+            android:onClick="editEvent" />
 
         <Button
             android:layout_width="wrap_content"
@@ -224,7 +224,8 @@
             android:text="Delete"
             android:id="@+id/button_delete"
 
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:onClick="deleteEvent" />
         </LinearLayout>
     </TableRow>
 </TableLayout>

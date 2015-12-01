@@ -79,6 +79,7 @@ public class CalendarActivity extends AppCompatActivity
         SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
 
         //System.out.println(apiURL + "events/" + sharedpreferences.getString("id","").replace("\"", ""));
+        Log.i("boh : Calendar activity", sharedpreferences.getString("id", "").replace("\"", ""));
         new Getevents().execute(new String[]{apiURL + "events/" + sharedpreferences.getString("id", "").replace("\"", "")});
 
 
@@ -196,13 +197,84 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     public void logoutApp(View view){
-        //for now testing modify event here (remove later)
-        Log.i("boh", "ModifyEventPage method");
-        Intent intent = new Intent(this, ModifyEventActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i("boh", apiURL);
+            new LogOutEvent().execute(new String[]{apiURL+ "users/logout"});
+        } else {
+            Toast.makeText(getApplicationContext(), "No internet connection!",
+                    Toast.LENGTH_SHORT).show();
+        }
 
     }
+
+    private class LogOutEvent extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            // params comes from the execute() call: params[0] is the url.
+            try {
+                return postcall(urls[0]);
+            } catch (IOException e) {
+                return "Unable to retrieve the web page.";
+            }
+        }
+
+        protected void onPostExecute(String result) {
+            Log.i("boh", result);
+            if(result.equals("true")){
+                Toast.makeText(getApplicationContext(), "You are logged out",
+                        Toast.LENGTH_SHORT).show();
+                super.onPostExecute(result);
+                Intent intent = new Intent(CalendarActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+
+            }else{
+                Toast.makeText(getApplicationContext(), "Cannot logout",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private String postcall(String myurl) throws IOException {
+        int len = 500;
+        String response = "";
+        try {
+            Log.i("boh", "logout called");
+            URL url = new URL(myurl);
+            Log.i("boh", "logout: "+url);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            OutputStream os = conn.getOutputStream();
+
+            os.close();
+            int responseCode=conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    response+=line;
+                }
+            }
+            else {
+                response="";
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
