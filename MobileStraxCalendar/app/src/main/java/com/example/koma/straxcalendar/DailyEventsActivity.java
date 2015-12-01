@@ -105,16 +105,6 @@ public class DailyEventsActivity extends Activity {
             return (row);
         }
 
-        public void editEvent(View view){
-            Log.i("boh", "in editEvent");
-            Intent intent = new Intent(DailyEventsActivity.this, ModifyEventActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
 
-        public void deleteEvent(View view){
-            Log.i("boh", "in deleteEvent");
-
-        }
     }
 }
