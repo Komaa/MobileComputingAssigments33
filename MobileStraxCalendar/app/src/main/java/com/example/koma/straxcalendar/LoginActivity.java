@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.1.4:8080/api/";
+    private static String apiURL = "http://192.168.43.30:8080/api/";
 
     private Button login;
     private Button register;

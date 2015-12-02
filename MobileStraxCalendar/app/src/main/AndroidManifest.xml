@@ -40,6 +40,11 @@
             android:name=".ModifyEventActivity"
             android:label="@string/title_activity_modify_event"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".DailyEventsActivity"
+            android:label="@string/title_activity_modify_event"
+            android:theme="@android:style/Theme.Dialog"></activity>
+
     </application>
 
 </manifest>
