@@ -91,14 +91,14 @@ public class DailyEventsActivity extends Activity {
             try {
                 name.setText(events_adapter[position].getString("name"));
                 description.setText(events_adapter[position].getString("description"));
-                start_event.setText(dtf.print(new DateTime(events_adapter[position].getString("start_event"))));
-                end_event.setText(dtf.print(new DateTime(events_adapter[position].getString("end_event"))));
+                start_event.setText(dtf.print(new DateTime(DateTime.parse(events_adapter[position].getString("start_event")))));
+                end_event.setText(dtf.print(new DateTime(DateTime.parse(events_adapter[position].getString("end_event")))));
                 repetition_event.setText(events_adapter[position].getString("repetition"));
                 System.out.println(events_adapter[position].getString("when_repetition"));
-                if (events_adapter[position].getString("when_repetition") != null && !events_adapter[position].getString("when_repetition").equals("null")) {
-                    when_repetition_event.setText(dtf.print(new DateTime(events_adapter[position].getString("when_repetition"))));
-                    System.out.println(events_adapter[position].getString("when_repetition"));
-                }
+                if (events_adapter[position].getString("when_repetition") != null && !events_adapter[position].getString("when_repetition").equals("null"))
+                    when_repetition_event.setText(dtf.print(new DateTime(DateTime.parse(events_adapter[position].getString("when_repetition")))));
+                else
+                    when_repetition_event.setText("");
                 when_alert_event.setText(events_adapter[position].getString("when_alert"));
                 alert_event.setText(events_adapter[position].getString("alert"));
                 type_event.setText(events_adapter[position].getString("type"));
