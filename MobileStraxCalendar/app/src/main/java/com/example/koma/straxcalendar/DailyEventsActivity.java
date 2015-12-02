@@ -46,7 +46,7 @@ public class DailyEventsActivity extends Activity  {
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.1.4:8080/api/";
+    private static String apiURL = "http://192.168.0.101:8080/api/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class DailyEventsActivity extends Activity  {
     class dataListAdapter extends BaseAdapter {
         JSONObject[] events_adapter;
 
-
+        String eid;
         dataListAdapter() {
             events_adapter = null;
 
@@ -71,7 +71,8 @@ public class DailyEventsActivity extends Activity  {
         public dataListAdapter(HashSet<JSONObject> events) {
 
             events_adapter = events.toArray(new JSONObject[events.size()]);
-            System.out.println(events_adapter.length);
+            //Log.i("events_adapter.length",""+events_adapter.length);
+           // eid = new String [events_adapter.length];
 
         }
 
@@ -102,11 +103,11 @@ public class DailyEventsActivity extends Activity  {
             description = (TextView) row.findViewById(R.id.text_description_event);
             start_event = (TextView) row.findViewById(R.id.text_start_event);
             end_event = (TextView) row.findViewById(R.id.text_end_event);
-            repetition_event= (TextView) row.findViewById(R.id.text_repetition_event);
-            when_repetition_event= (TextView) row.findViewById(R.id.text_when_repetition_event);
+           // repetition_event= (TextView) row.findViewById(R.id.text_repetition_event);
+            //when_repetition_event= (TextView) row.findViewById(R.id.text_when_repetition_event);
             alert_event = (TextView) row.findViewById(R.id.text_alert_event);
             when_alert_event = (TextView) row.findViewById(R.id.text_when_alert_event);
-            type_event= (TextView) row.findViewById(R.id.text_type_event);
+           // type_event= (TextView) row.findViewById(R.id.text_type_event);
             edit= (Button) row.findViewById(R.id.button_edit);
             delete= (Button) row.findViewById(R.id.button_delete);
             DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
@@ -115,15 +116,15 @@ public class DailyEventsActivity extends Activity  {
                 description.setText(events_adapter[position].getString("description"));
                 start_event.setText(dtf.print(new DateTime(DateTime.parse(events_adapter[position].getString("start_event")))));
                 end_event.setText(dtf.print(new DateTime(DateTime.parse(events_adapter[position].getString("end_event")))));
-                repetition_event.setText(events_adapter[position].getString("repetition"));
+              /*  repetition_event.setText(events_adapter[position].getString("repetition"));
                 System.out.println(events_adapter[position].getString("when_repetition"));
                 if (events_adapter[position].getString("when_repetition") != null && !events_adapter[position].getString("when_repetition").equals("null"))
                     when_repetition_event.setText(dtf.print(new DateTime(DateTime.parse(events_adapter[position].getString("when_repetition")))));
                 else
-                    when_repetition_event.setText("");
-                when_alert_event.setText(events_adapter[position].getString("when_alert"));
+                    when_repetition_event.setText("");*/
+                when_alert_event.setText(dtf.print(new DateTime(DateTime.parse(events_adapter[position].getString("when_alert")))));
                 alert_event.setText(events_adapter[position].getString("alert"));
-                type_event.setText(events_adapter[position].getString("type"));
+               // type_event.setText(events_adapter[position].getString("type"));
                 edit.setTag(events_adapter[position].getString("_id"));
                 delete.setTag(events_adapter[position].getString("_id"));
             } catch (JSONException e) {
@@ -140,6 +141,7 @@ public class DailyEventsActivity extends Activity  {
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     deleteEvent(v);
                 }
             });
@@ -149,9 +151,10 @@ public class DailyEventsActivity extends Activity  {
 
 
         public void editEvent(View v){
-            Log.i("boh", "editEvent method");
+            eid=v.getTag().toString();
             Intent intent = new Intent(DailyEventsActivity.this, ModifyEventActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("event_id", eid);
             startActivity(intent);
         }
 
@@ -160,7 +163,9 @@ public class DailyEventsActivity extends Activity  {
 
         //call deleteEvent(View view) on button click
         public void deleteEvent(View view){
-            String event_id= "5658a3e2c1b0e13e09565cd0";//hardcoded for now.
+            eid=view.getTag().toString();
+            Log.i("boh", "deleteEvent method "+eid);
+            String event_id= eid;
             ConnectivityManager connMgr = (ConnectivityManager)
                     getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -193,9 +198,9 @@ public class DailyEventsActivity extends Activity  {
                     Toast.makeText(getApplicationContext(), "Event successfully deleted",
                             Toast.LENGTH_SHORT).show();
                     super.onPostExecute(result);
-                    // Intent intent = new Intent(AddEventActivity.this, CalendarActivity.class);
-                    //   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    // getApplicationContext().startActivity(intent);
+                    Intent intent = new Intent(DailyEventsActivity.this, CalendarActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getApplicationContext().startActivity(intent);
 
                 }else{
                     Log.i("boh", "Cannot delete event");

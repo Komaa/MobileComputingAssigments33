@@ -2,6 +2,7 @@ package com.example.koma.straxcalendar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -17,6 +18,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.*;
 
 import java.io.BufferedReader;
@@ -45,19 +49,18 @@ public class ModifyEventActivity extends AppCompatActivity {
     private boolean isAlert;
     private EditText when_alert;
     private Button update;
+    private Intent intent;
 
-    //harcoded user_id for testing
-    private String user_id = "563b3c7a91685d2e0249b102";
+    private String user_id;
 
-    //harcoded event_id for testing
-    private String event_id = "565898490cf6bf6f062afc3d";
+    private String event_id;
 
     //test on server
     //private static String apiURL = "http://130.233.42.94:8080/api/";
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.1.4:8080/api/";
+    private static String apiURL = "http://192.168.0.101:8080/api/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +72,18 @@ public class ModifyEventActivity extends AppCompatActivity {
 
     //initialize variables
     private void setupVariables() {
+        intent =getIntent();
+        SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
+        user_id = sharedpreferences.getString("id", "").replace("\"", "");
+        event_id = intent.getStringExtra("event_id");
+        Log.i("boh", "event "+user_id +", "+event_id);
         name = (EditText) findViewById(R.id.name);
         description = (EditText) findViewById(R.id.descr);
         start_date = (EditText) findViewById(R.id.strtdate);
         end_date = (EditText) findViewById(R.id.enddate);
         alert = (CheckBox) findViewById(R.id.alert);
         when_alert = (EditText) findViewById(R.id.whenalert);
-        update = (Button) findViewById(R.id.add);
+        update = (Button) findViewById(R.id.update);
         isAlert=false;
         getEvent();
 
@@ -102,8 +110,6 @@ public class ModifyEventActivity extends AppCompatActivity {
         String start = start_date.getText().toString();
         String end = end_date.getText().toString();
         String alertDate = when_alert.getText().toString();
-        if(!isAlert)
-            alertDate=null;
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -143,13 +149,15 @@ public class ModifyEventActivity extends AppCompatActivity {
                 String end_event = obj.getString("end_event");
                 Boolean eventAlert = obj.getBoolean("alert");
                 String alertWhen = obj.getString("when_alert");
+                isAlert=eventAlert;
+                DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
                 name.setText(eventName);
                 description.setText(eventDescription);
-                start_date.setText(start_event);
-                end_date.setText(end_event);
+                start_date.setText(dtf.print(new DateTime(DateTime.parse(start_event))));
+                end_date.setText(dtf.print(new DateTime(DateTime.parse(end_event))));
                 alert.setChecked(eventAlert);
-                when_alert.setText(alertWhen);
+                when_alert.setText(dtf.print(new DateTime(DateTime.parse(alertWhen))));
             }catch(Exception e){
 
             }
@@ -221,6 +229,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.i("boh:onPostExecute()", result);
+            Log.i("boh:onPostExecute()","no result");
             if(result.equals("Event Updated")){
                 Log.i("boh", "Event Updated");
                 Toast.makeText(getApplicationContext(), "Event Is Updated",
@@ -231,7 +240,7 @@ public class ModifyEventActivity extends AppCompatActivity {
                 getApplicationContext().startActivity(intent);
 
             }else{
-                Log.i("boh", "Cannot add event");
+                Log.i("boh", "Cannot update event");
                 Toast.makeText(getApplicationContext(), "Cannot Update Event",
                         Toast.LENGTH_SHORT).show();
             }
@@ -283,6 +292,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.i("boh:", response);
         return response;
     }
 

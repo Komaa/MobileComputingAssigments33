@@ -70,7 +70,7 @@ public class CalendarActivity extends AppCompatActivity {
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.43.30:8080/api/";
+    private static String apiURL = "http://192.168.0.101:8080/api/";
 
     private static HashSet<Date> date_events = new HashSet<>();
     public static HashSet<JSONObject> events = new HashSet<JSONObject>();
