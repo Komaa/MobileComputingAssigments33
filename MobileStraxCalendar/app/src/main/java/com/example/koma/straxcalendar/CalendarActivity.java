@@ -7,6 +7,7 @@ package com.example.koma.straxcalendar;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import android.os.Debug;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,16 +40,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -80,6 +88,7 @@ public class CalendarActivity extends AppCompatActivity {
     private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
     private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
     private static final int MY_PERMISSIONS_REQUEST_READ_CALENDAR =1;
+    private SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +97,7 @@ public class CalendarActivity extends AppCompatActivity {
         events.clear();
         daily_events.clear();
         setContentView(R.layout.activity_calendar);
-        SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
         setupVariables();
         //System.out.println(apiURL + "events/" + sharedpreferences.getString("id","").replace("\"", ""));
         Log.i("boh : Calendar activity", sharedpreferences.getString("id", "").replace("\"", ""));
@@ -160,16 +169,145 @@ public class CalendarActivity extends AppCompatActivity {
             ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
 
             // Do something with the values...
+            long now = new Date().getTime();
 
-            Toast.makeText(getApplicationContext(), calID + displayName + accountName + ownerName + "  ",
-                    Toast.LENGTH_SHORT).show();
+            Uri.Builder builder = Uri.parse("content://com.android.calendar/instances/when").buildUpon();
+            ContentUris.appendId(builder, now - DateUtils.DAY_IN_MILLIS *15);
+            ContentUris.appendId(builder,now + DateUtils.DAY_IN_MILLIS*15);
+
+
+            Cursor eventCursor = cr.query(builder.build(),
+                    new String[]  { "title", "begin", "end", "description"}, "1=" + 1,
+                    null, "startDay ASC, startMinute ASC");
+
+            System.out.println("eventCursor count="+eventCursor.getCount());
+            if(eventCursor.getCount()>0)
+            {
+
+                if(eventCursor.moveToFirst())
+                {
+                    do
+                    {
+
+                        final String title = eventCursor.getString(0);
+                        final Date begin = new Date(eventCursor.getLong(1));
+                        final Date end = new Date(eventCursor.getLong(2));
+                        final String description = eventCursor.getString(3);
+
+            /*  System.out.println("Title: " + title + " Begin: " + begin + " End: " + end +
+                        " All Day: " + allDay);
+            */
+                        System.out.println("Title:"+title);
+                        System.out.println("Begin:"+begin);
+                        System.out.println("End:"+end);
+                        System.out.println("description:" + description);
+                        new AddEventtodb().execute(new String[]{apiURL + "events/" + sharedpreferences.getString("id", "").replace("\"", ""),
+                                title, description, begin.toString(), end.toString()});
+                    }
+                    while(eventCursor.moveToNext());
+                }
+            }
         }
+        new Getevents().execute(new String[]{apiURL + "events/" + sharedpreferences.getString("id", "").replace("\"", "")});
+        Toast.makeText(getApplicationContext(), "Synchronizing from the mobile calendar",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private class AddEventtodb extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            HashMap<String, String> inputmap= new HashMap<String, String>();
+            inputmap.put("name", urls[1]);
+            inputmap.put("description", urls[2]);
+            inputmap.put("start_event", urls[3]);
+            inputmap.put("end_event", urls[4]);
+            // params comes from the execute() call: params[0] is the url.
+            try {
+                return callserverforinsert(urls[0], inputmap);
+            } catch (IOException e) {
+                return "Unable to insert the event.";
+            }
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result.equals("Event Added")) {
+                Log.i("Event", "Event Added");
+
+            }else{
+                Log.i("Event", "Error in adding event");
+
+            }
+
+        }
+    }
+
+    // Given a URL, establishes an HttpUrlConnection and retrieves
+    // the web page content as a InputStream, which it returns as
+    // a string.
+    private String callserverforinsert(String myurl, HashMap<String, String> postDataParams) throws IOException {
+
+        // Only display the first 500 characters of the retrieved
+        // web page content.
+        int len = 500;
+        String response = "";
+        try {
+            URL url = new URL(myurl);
+            Log.i("url", ""+url);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode=conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    response+=line;
+                }
+            }
+            else {
+                response="";
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        return result.toString();
     }
 
     public void syncfrom(View view) {
         requestReadPermission();
-        Toast.makeText(getApplicationContext(), "Synchronized from the mobile calendar!",
-                Toast.LENGTH_SHORT).show();
     }
 
     public void syncto(View view) {
@@ -330,6 +468,9 @@ public class CalendarActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             Log.i("boh", result);
             if(result.equals("true")){
+                date_events.clear();
+                daily_events.clear();
+                events.clear();
                 Toast.makeText(getApplicationContext(), "You are logged out",
                         Toast.LENGTH_SHORT).show();
                 super.onPostExecute(result);
