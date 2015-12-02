@@ -4,18 +4,30 @@ package com.example.koma.straxcalendar;
  * Created by Koma on 25/11/15.
  */
 
-    import android.content.Context;
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
+import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
@@ -40,8 +52,7 @@ import java.util.Locale;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class CalendarActivity extends AppCompatActivity
-{
+public class CalendarActivity extends AppCompatActivity {
 
     //test on server
     //private static String apiURL = "http://130.233.42.94:8080/api/";
@@ -53,23 +64,118 @@ public class CalendarActivity extends AppCompatActivity
     private static HashSet<Date> date_events = new HashSet<>();
     public static HashSet<JSONObject> events = new HashSet<JSONObject>();
     public static HashSet<JSONObject> daily_events = new HashSet<JSONObject>();
+    private Button syncfrom, syncto;
+    // Projection array. Creating indices for this array instead of doing
+// dynamic lookups improves performance.
+    public static final String[] EVENT_PROJECTION = new String[]{
+            CalendarContract.Calendars._ID,                           // 0
+            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
+            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
+    };
+
+    // The indices for the projection array above.
+    private static final int PROJECTION_ID_INDEX = 0;
+    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
+    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
+    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CALENDAR =1;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         daily_events.clear();
         events.clear();
         daily_events.clear();
         setContentView(R.layout.activity_calendar);
         SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
-
+        setupVariables();
         //System.out.println(apiURL + "events/" + sharedpreferences.getString("id","").replace("\"", ""));
         Log.i("boh : Calendar activity", sharedpreferences.getString("id", "").replace("\"", ""));
         new Getevents().execute(new String[]{apiURL + "events/" + sharedpreferences.getString("id", "").replace("\"", "")});
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void requestReadPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CALENDAR},
+                    MY_PERMISSIONS_REQUEST_READ_CALENDAR);
+
+        }else{
+            getcalendar();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CALENDAR: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                   getcalendar();
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "Permissions not granted",
+                            Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'switch' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    private void setupVariables() {
+        syncfrom = (Button) findViewById(R.id.syncfrombutton);
+        syncto = (Button) findViewById(R.id.synctobutton);
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public void getcalendar() {
+        // Run query
+        Cursor cur = null;
+        ContentResolver cr = getContentResolver();
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        String selection = "(" + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?)";
+        String[] selectionArgs = new String[]{"com.google"};
 
 
 
+        cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
 
+        while (cur.moveToNext()) {
+            long calID = 0;
+            String displayName = null;
+            String accountName = null;
+            String ownerName = null;
+
+            // Get the field values
+            calID = cur.getLong(PROJECTION_ID_INDEX);
+            displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
+            accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
+            ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
+
+            // Do something with the values...
+
+            Toast.makeText(getApplicationContext(), calID + displayName + accountName + ownerName + "  ",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void syncfrom(View view) {
+        requestReadPermission();
+        Toast.makeText(getApplicationContext(), "Synchronized from the mobile calendar!",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    public void syncto(View view) {
+        getcalendar();
+        Toast.makeText(getApplicationContext(), "Synchronized to the mobile calendar!",
+                Toast.LENGTH_SHORT).show();
     }
 
         private class Getevents extends AsyncTask<String, Void, String> {

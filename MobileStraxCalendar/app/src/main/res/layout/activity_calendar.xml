@@ -57,13 +57,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SyncFrom"
-            android:id="@+id/button4" />
+            android:onClick="syncfrom"
+            android:id="@+id/syncfrombutton" />
+
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SyncTo"
-            android:id="@+id/button3" />
+            android:onClick="syncto"
+            android:id="@+id/synctobutton" />
     </LinearLayout>
 
     <com.example.koma.straxcalendar.MyCalendarView
