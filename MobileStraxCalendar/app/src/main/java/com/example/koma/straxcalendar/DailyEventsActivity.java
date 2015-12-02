@@ -1,20 +1,17 @@
 package com.example.koma.straxcalendar;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
@@ -36,7 +33,7 @@ public class DailyEventsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dailyevents_activity);
         l1=(ListView)findViewById(R.id.list);
-        l1.setAdapter(new dataListAdapter(CalendarActivity.events));
+        l1.setAdapter(new dataListAdapter(CalendarActivity.daily_events));
 
     }
 
@@ -78,6 +75,7 @@ public class DailyEventsActivity extends Activity {
             row = inflater.inflate(R.layout.events_display, parent, false);
             TextView name, description, start_event, end_event,repetition_event,when_repetition_event,
                     alert_event, when_alert_event, type_event;
+            Button edit, delete;
             name = (TextView) row.findViewById(R.id.text_name_event);
             description = (TextView) row.findViewById(R.id.text_description_event);
             start_event = (TextView) row.findViewById(R.id.text_start_event);
@@ -87,6 +85,8 @@ public class DailyEventsActivity extends Activity {
             alert_event = (TextView) row.findViewById(R.id.text_alert_event);
             when_alert_event = (TextView) row.findViewById(R.id.text_when_alert_event);
             type_event= (TextView) row.findViewById(R.id.text_type_event);
+            edit= (Button) row.findViewById(R.id.button_edit);
+            delete= (Button) row.findViewById(R.id.button_delete);
             DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
             try {
                 name.setText(events_adapter[position].getString("name"));
@@ -94,10 +94,16 @@ public class DailyEventsActivity extends Activity {
                 start_event.setText(dtf.print(new DateTime(events_adapter[position].getString("start_event"))));
                 end_event.setText(dtf.print(new DateTime(events_adapter[position].getString("end_event"))));
                 repetition_event.setText(events_adapter[position].getString("repetition"));
-                when_repetition_event.setText(dtf.print(new DateTime(events_adapter[position].getString("when_repetition"))));
+                System.out.println(events_adapter[position].getString("when_repetition"));
+                if (events_adapter[position].getString("when_repetition") != null && !events_adapter[position].getString("when_repetition").equals("null")) {
+                    when_repetition_event.setText(dtf.print(new DateTime(events_adapter[position].getString("when_repetition"))));
+                    System.out.println(events_adapter[position].getString("when_repetition"));
+                }
                 when_alert_event.setText(events_adapter[position].getString("when_alert"));
                 alert_event.setText(events_adapter[position].getString("alert"));
                 type_event.setText(events_adapter[position].getString("type"));
+                edit.setTag(events_adapter[position].getString("_id"));
+                delete.setTag(events_adapter[position].getString("_id"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

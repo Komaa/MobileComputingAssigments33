@@ -5,57 +5,39 @@ package com.example.koma.straxcalendar;
  */
 
     import android.content.Context;
-    import android.content.SharedPreferences;
-    import android.net.ConnectivityManager;
-    import android.net.NetworkInfo;
-    import android.os.AsyncTask;
-    import android.os.Bundle;
-    import android.support.v7.app.AppCompatActivity;
-    import android.widget.CalendarView;
-    import android.widget.CalendarView.OnDateChangeListener;
-    import android.widget.Toast;
-    import android.app.Activity;
-    import android.content.Intent;
-    import android.view.View;
-    import android.util.Log;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
-    import java.io.BufferedReader;
-    import java.io.BufferedWriter;
-    import java.io.IOException;
-    import java.io.InputStream;
-    import java.io.InputStreamReader;
-    import java.io.OutputStream;
-    import java.io.OutputStreamWriter;
-    import java.io.Reader;
-    import java.io.UnsupportedEncodingException;
-    import java.net.HttpURLConnection;
-    import java.net.URL;
-    import java.net.URLEncoder;
-    import java.text.DateFormat;
-    import java.text.SimpleDateFormat;
-    import java.util.Date;
-    import java.util.HashMap;
-    import java.util.HashSet;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    import android.support.v7.app.ActionBarActivity;
-    import android.os.Bundle;
-    import android.view.Menu;
-    import android.view.MenuItem;
-    import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
 
-    import org.joda.time.DateTime;
-    import org.json.JSONArray;
-    import org.json.JSONException;
-    import org.json.JSONObject;
-
-    import java.text.DateFormat;
-    import java.text.SimpleDateFormat;
-    import java.util.Date;
-    import java.util.HashSet;
-    import java.util.Iterator;
-    import java.util.Map;
-
-    import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.HttpsURLConnection;
 
 
 public class CalendarActivity extends AppCompatActivity
@@ -66,15 +48,18 @@ public class CalendarActivity extends AppCompatActivity
 
     //testing locally
     //Najeefa = 192.168.0.101  , Pietro = 192.168.43.30
-    private static String apiURL = "http://192.168.0.101:8080/api/";
+    private static String apiURL = "http://192.168.43.30:8080/api/";
 
     private static HashSet<Date> date_events = new HashSet<>();
     public static HashSet<JSONObject> events = new HashSet<JSONObject>();
-
+    public static HashSet<JSONObject> daily_events = new HashSet<JSONObject>();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        daily_events.clear();
+        events.clear();
+        daily_events.clear();
         setContentView(R.layout.activity_calendar);
         SharedPreferences sharedpreferences = getSharedPreferences("session", Context.MODE_PRIVATE);
 
@@ -119,6 +104,21 @@ public class CalendarActivity extends AppCompatActivity
                         @Override
                         public void onDayLongPress(Date date) {
                             // show returned day
+                            daily_events.clear();
+                            DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MMM-yy").withLocale(Locale.US);
+                            String day = fmt.print(new DateTime(date));
+                            for (JSONObject event : events) {
+                                String daytoconfront="";
+                                try {
+                                    daytoconfront = fmt.print(new DateTime(event.getString("start_event")));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println(daytoconfront);
+                                if(day.equals(daytoconfront))
+                                    daily_events.add(event);
+
+                            }
                             Intent intent = new Intent(CalendarActivity.this, DailyEventsActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             getApplicationContext().startActivity(intent);
