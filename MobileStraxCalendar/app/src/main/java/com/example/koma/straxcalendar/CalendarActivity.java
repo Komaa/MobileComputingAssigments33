@@ -8,6 +8,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,11 +17,12 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.provider.CalendarContract;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
-import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
@@ -50,11 +52,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -87,9 +93,10 @@ public class CalendarActivity extends AppCompatActivity {
     private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
     private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
     private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-    private static final int MY_PERMISSIONS_REQUEST_READ_CALENDAR =1;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CALENDAR = 1;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_CALENDAR = 2;
     private SharedPreferences sharedpreferences;
-
+    private final static String ISO8601DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSZ";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,24 +113,44 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     @TargetApi(Build.VERSION_CODES.M)
-    public void requestReadPermission(){
+    public void requestReadPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CALENDAR},
                     MY_PERMISSIONS_REQUEST_READ_CALENDAR);
 
-        }else{
-            getcalendar();
+        } else {
+            fromcalendar();
         }
     }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void requestWritePermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR},
+                    MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+        } else {
+            tocalendar();
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_CALENDAR: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    fromcalendar();
+                } else {
 
-                   getcalendar();
+                    Toast.makeText(getApplicationContext(), "Permissions not granted",
+                            Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
 
+            case MY_PERMISSIONS_REQUEST_WRITE_CALENDAR: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    tocalendar();
                 } else {
 
                     Toast.makeText(getApplicationContext(), "Permissions not granted",
@@ -144,14 +171,13 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public void getcalendar() {
+    public void fromcalendar() {
         // Run query
         Cursor cur = null;
         ContentResolver cr = getContentResolver();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
         String selection = "(" + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?)";
         String[] selectionArgs = new String[]{"com.google"};
-
 
 
         cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
@@ -172,22 +198,19 @@ public class CalendarActivity extends AppCompatActivity {
             long now = new Date().getTime();
 
             Uri.Builder builder = Uri.parse("content://com.android.calendar/instances/when").buildUpon();
-            ContentUris.appendId(builder, now - DateUtils.DAY_IN_MILLIS *15);
-            ContentUris.appendId(builder,now + DateUtils.DAY_IN_MILLIS*15);
+            ContentUris.appendId(builder, now - DateUtils.DAY_IN_MILLIS * 15);
+            ContentUris.appendId(builder, now + DateUtils.DAY_IN_MILLIS * 15);
 
 
             Cursor eventCursor = cr.query(builder.build(),
-                    new String[]  { "title", "begin", "end", "description"}, "1=" + 1,
+                    new String[]{"title", "begin", "end", "description"}, "1=" + 1,
                     null, "startDay ASC, startMinute ASC");
 
-            System.out.println("eventCursor count="+eventCursor.getCount());
-            if(eventCursor.getCount()>0)
-            {
+            System.out.println("eventCursor count=" + eventCursor.getCount());
+            if (eventCursor.getCount() > 0) {
 
-                if(eventCursor.moveToFirst())
-                {
-                    do
-                    {
+                if (eventCursor.moveToFirst()) {
+                    do {
 
                         final String title = eventCursor.getString(0);
                         final Date begin = new Date(eventCursor.getLong(1));
@@ -197,20 +220,67 @@ public class CalendarActivity extends AppCompatActivity {
             /*  System.out.println("Title: " + title + " Begin: " + begin + " End: " + end +
                         " All Day: " + allDay);
             */
-                        System.out.println("Title:"+title);
-                        System.out.println("Begin:"+begin);
-                        System.out.println("End:"+end);
+                        System.out.println("Title:" + title);
+                        System.out.println("Begin:" + begin);
+                        System.out.println("End:" + end);
                         System.out.println("description:" + description);
                         new AddEventtodb().execute(new String[]{apiURL + "events/" + sharedpreferences.getString("id", "").replace("\"", ""),
                                 title, description, begin.toString(), end.toString()});
                     }
-                    while(eventCursor.moveToNext());
+                    while (eventCursor.moveToNext());
                 }
             }
         }
         new Getevents().execute(new String[]{apiURL + "events/" + sharedpreferences.getString("id", "").replace("\"", "")});
         Toast.makeText(getApplicationContext(), "Synchronizing from the mobile calendar",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    public void tocalendar() {
+        // Run query
+        long calID = 1;
+        long startMillis = 0;
+        long endMillis = 0;
+        Calendar beginTime = Calendar.getInstance();
+        Calendar endTime = Calendar.getInstance();
+        ContentResolver cr = getContentResolver();
+        ContentValues values = new ContentValues();
+        for (JSONObject event : events) {
+            try {
+            beginTime=getCalendarFromISO(event.getString("start_event"));
+            startMillis = beginTime.getTimeInMillis();
+            endTime = getCalendarFromISO(event.getString("end_event"));
+            endMillis = endTime.getTimeInMillis();
+            values.put(Events.DTSTART, startMillis);
+            values.put(Events.DTEND, endMillis);
+            values.put(Events.TITLE, event.getString("name"));
+            values.put(Events.DESCRIPTION, event.getString("description"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            values.put(Events.CALENDAR_ID, calID);
+            values.put(Events.EVENT_TIMEZONE, TimeZone.getDefault().toString());
+            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+
+            Toast.makeText(getApplicationContext(), "Synchronizing to the mobile calendar",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static Calendar getCalendarFromISO(String datestring) {
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()) ;
+        SimpleDateFormat dateformat = new SimpleDateFormat(ISO8601DATEFORMAT, Locale.getDefault());
+        try {
+            Date date = dateformat.parse(datestring);
+            date.setHours(date.getHours()-1);
+            calendar.setTime(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return calendar;
     }
 
     private class AddEventtodb extends AsyncTask<String, Void, String> {
@@ -311,9 +381,7 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     public void syncto(View view) {
-        getcalendar();
-        Toast.makeText(getApplicationContext(), "Synchronized to the mobile calendar!",
-                Toast.LENGTH_SHORT).show();
+        requestWritePermission();
     }
 
         private class Getevents extends AsyncTask<String, Void, String> {
@@ -358,7 +426,6 @@ public class CalendarActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                System.out.println(daytoconfront);
                                 if(day.equals(daytoconfront))
                                     daily_events.add(event);
 
