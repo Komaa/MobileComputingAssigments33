@@ -17,11 +17,10 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.provider.CalendarContract;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
+import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
@@ -61,7 +59,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -183,7 +180,7 @@ public class CalendarActivity extends AppCompatActivity {
         cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
 
         while (cur.moveToNext()) {
-            long calID = 0;
+            long calID = cur.getLong(0);
             String displayName = null;
             String accountName = null;
             String ownerName = null;
@@ -198,12 +195,12 @@ public class CalendarActivity extends AppCompatActivity {
             long now = new Date().getTime();
 
             Uri.Builder builder = Uri.parse("content://com.android.calendar/instances/when").buildUpon();
-            ContentUris.appendId(builder, now - DateUtils.DAY_IN_MILLIS * 15);
-            ContentUris.appendId(builder, now + DateUtils.DAY_IN_MILLIS * 15);
+            ContentUris.appendId(builder, now - DateUtils.DAY_IN_MILLIS * 30);
+            ContentUris.appendId(builder, now + DateUtils.DAY_IN_MILLIS * 30);
 
 
             Cursor eventCursor = cr.query(builder.build(),
-                    new String[]{"title", "begin", "end", "description"}, "1=" + 1,
+                    new String[]{"title", "begin", "end", "description"}, "CALENDAR_ID=" +calID,
                     null, "startDay ASC, startMinute ASC");
 
             System.out.println("eventCursor count=" + eventCursor.getCount());
@@ -247,12 +244,13 @@ public class CalendarActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         for (JSONObject event : events) {
             try {
-            beginTime=getCalendarFromISO(event.getString("start_event"));
+            beginTime=new DateTime(DateTime.parse(event.getString("start_event"))).toCalendar(null);
             startMillis = beginTime.getTimeInMillis();
-            endTime = getCalendarFromISO(event.getString("end_event"));
+            endTime = new DateTime(DateTime.parse(event.getString("end_event"))).toCalendar(null);
             endMillis = endTime.getTimeInMillis();
+
             values.put(Events.DTSTART, startMillis);
-            values.put(Events.DTEND, endMillis);
+                values.put(Events.DTEND, endMillis);
             values.put(Events.TITLE, event.getString("name"));
             values.put(Events.DESCRIPTION, event.getString("description"));
             } catch (JSONException e) {
@@ -303,7 +301,7 @@ public class CalendarActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (result.equals("Event Added")) {
-                Log.i("Event", "Event Added");
+                //Log.i("Event", "Event Added");
 
             }else{
                 Log.i("Event", "Error in adding event");
